@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
 <head>
-<title>The Acid3 Test</title>
+<title>The MathML Acid3 Test</title>
 <meta charset="utf-8"/>
 
 <script type="text/javascript">
@@ -152,8 +152,7 @@
     // there are 6 buckets with 16 tests each,
     // plus four special tests (0, 97, 98, and 99).
 
-    // We use getBoundingClientRect and *ElementChild.
-    // Be aware of bug 109556 in Webkit and bug 491668 in Gecko.
+    // We use *ElementChild because of WebKit bug 109556.
 
     function () {
       // test 0: verify JS and test basic feature of the <math> element
@@ -364,7 +363,7 @@
     var msqrtChild = document.getElementById("test4_msqrt").firstElementChild.
       getBoundingClientRect();
     
-    assert(almostLessThanRel(baseSize/3,
+    assert(almostLessThanRel(baseSize * delta,
                              msqrtChild.left - msqrt.left),
            "the square root should be placed on the left");
 
@@ -408,7 +407,7 @@
 
     assert(almostLessThanRel(2*mtext.width, menclose.width) &&
            almostLessThanRel(2*mtext.width, menclose.width),
-           "The outermost menclose should be at least twice as large as large");
+       "The outermost menclose should be at least twice as large as the child");
 
     return 1;
     },
@@ -694,15 +693,12 @@
            "single char mi should be slanted")
 
     assert(almostEqualRel(document.getElementById("test16mi2").
-                          getBoundingClientRect().width,
-                          document.getElementById("test16mi2ref").
-                         getBoundingClientRect().width),
-           "multi char mi should not be slanted")
+                          getBoundingClientRect().width, 2*w),
+           "multiple char mi should not be slanted")
 
     var mnRect = document.getElementById("test16mn").getBoundingClientRect();
 
-    assert(almostEqualRel(mnRect.width, w) &&
-           almostEqualRel(mnRect.height, w),
+    assert(almostEqualRel(mnRect.width, w),
            "mn should have same size as mtext")
 
     return 1;
@@ -716,38 +712,37 @@
       getBoundingClientRect();
     var num = document.getElementById("test17_linethickness").firstElementChild.
       getBoundingClientRect();
-    var denum = document.getElementById("test17_linethickness").
+    var denom = document.getElementById("test17_linethickness").
       lastElementChild.getBoundingClientRect();
 
     assert(almostLessThanRel(
-             num.height + 2*baseSize + denum.height, mfrac.height) &&
-           almostLessThanAbs(num.bottom + 2*baseSize, denum.top),
+             num.height + 2*baseSize + denom.height, mfrac.height) &&
+           almostLessThanAbs(num.bottom + 2*baseSize, denom.top),
            "numerator and denominator should be separated by linethickness")
 
     num = document.getElementById("test17_numalign").firstElementChild.
       getBoundingClientRect();
-    denum = document.getElementById("test17_numalign").
-      lastElementChild.getBoundingClientRect();
+    mfrac = document.getElementById("test17_numalign").getBoundingClientRect();
 
-    assert(almostEqualAbs(num.left, denum.left),
-           "numerator and denominator should be aligned left")
+    assert(almostEqualAbs(num.left, mfrac.left),
+           "numerator should be aligned left")
 
-    num = document.getElementById("test17_denomalign").firstElementChild.
+    mfrac = document.getElementById("test17_denomalign").
       getBoundingClientRect();
-    denum = document.getElementById("test17_denomalign").
+    denom = document.getElementById("test17_denomalign").
       lastElementChild.getBoundingClientRect();
 
-    assert(almostEqualAbs(num.right, denum.right),
-           "numerator and denominator should be aligned right")
+    assert(almostEqualAbs(mfrac.right, denom.right),
+           "denominator should be aligned right")
 
     num = document.getElementById("test17_bevelled").firstElementChild.
       getBoundingClientRect();
-    denum = document.getElementById("test17_bevelled").
+    denom = document.getElementById("test17_bevelled").
       lastElementChild.getBoundingClientRect();
 
-    assert(almostLessThanAbs(num.right, denum.left) &&
+    assert(almostLessThanAbs(num.right, denom.left) &&
            almostLessThanAbs(num.top*(1-delta)+num.bottom*delta,
-                             denum.top),
+                             denom.top),
            "incorrect position of mfrac children")
 
     return 2;
@@ -809,6 +804,7 @@
             success = (almostEqualAbs((baseRect.right + baseRect.left)/2,
                                       (b.right + b.left)/2));
           }
+	  // verify at least that the base is three times wider than the scripts
           success = success && almostLessThanRel(b.width, baseRect.width/3);
           assert(success,
                  "bad alignment (" + elements[i] + "_" + align[j] + ")");
@@ -1138,7 +1134,10 @@
     assert(
       almostLessThanAbs(
       document.getElementById("test34_2").getBoundingClientRect().right,
-      document.getElementById("test34_1").getBoundingClientRect().right),
+      document.getElementById("test34_1").getBoundingClientRect().right) &&
+      almostLessThanAbs(
+      document.getElementById("test34_1").getBoundingClientRect().left,
+      document.getElementById("test34_2").getBoundingClientRect().left),
       "Bad position of scripts (displaystyle=true)")
 
     assert(
@@ -1160,7 +1159,7 @@
 
     assert(
       almostEqualRel(
-        document.getElementById("test35_denum").getBoundingClientRect().width,
+        document.getElementById("test35_denom").getBoundingClientRect().width,
         10/2 * baseSize),
       "scriptlevel should be increased by 1 within denominator")
 
@@ -1172,8 +1171,8 @@
 
     assert(
       almostLessThanAbs(
-        document.getElementById("test35_denum1").getBoundingClientRect().right,
-        document.getElementById("test35_denum2").getBoundingClientRect().left),
+        document.getElementById("test35_denom1").getBoundingClientRect().right,
+        document.getElementById("test35_denom2").getBoundingClientRect().left),
       "displaystyle should be reset within denominator")
 
     return 3;
@@ -1193,7 +1192,7 @@
     return 3;
     },
     function () {
-    // test 37: msub script
+    // test 37: msup script
 
     var rect1 = document.getElementById("test37_1").getBoundingClientRect()
     var rect2 = document.getElementById("test37_2").getBoundingClientRect()
@@ -1268,7 +1267,7 @@
     var rect2 = math.lastElementChild.getBoundingClientRect()
 
     assert(almostEqualRel(rect2.left - rect1.right,
-                          3.5*baseSize + rect1.width + 4*baseSize),
+                          3.5*baseSize + baseSize + 4*baseSize),
            "bad lspace/rspace")
 
     return 3;
@@ -1291,13 +1290,13 @@
     function () {
     // test 45: mo symmetric
 
-    assert(almostLessThanRel((9+1)*baseSize,
+    assert(almostLessThanRel((9+9)*baseSize,
            document.getElementById("test45_1").getBoundingClientRect().height),
            "parenthesis should stretch symmetrically")
 
     var h = document.getElementById("test45_2").getBoundingClientRect().height;
     assert(almostLessThanRel((9+1)*baseSize, h) &&
-           almostLessThanAbs(h, (1+delta)*(9+1)*baseSize),
+           almostLessThanAbs(h, (1-delta)*(9+9)*baseSize),
            "parenthesis should not stretch symmetrically")
 
     return 3;
@@ -1451,8 +1450,8 @@
     // test 55: vertical stretching in mtd with rowspan
 
     var h = document.getElementById("test55_mo").getBoundingClientRect().height
-    assert(almostLessThanRel(2+2, h) &&
-           almostLessThanAbs(h, (1-delta)*6),
+    assert(almostLessThanRel((2+2)*baseSize, h) &&
+           almostLessThanAbs(h, (1-delta)*6*baseSize),
            "bad size for stretchy operator (mtd)")
     return 4;
     },
@@ -1484,8 +1483,8 @@
     // test 58: horizontal stretching in mtd with columnspan
 
     var h = document.getElementById("test58_mo").getBoundingClientRect().width
-    assert(almostLessThanRel(2+2, h) &&
-           almostLessThanAbs(h, (1-delta)*6),
+    assert(almostLessThanRel((2+2)*baseSize, h) &&
+           almostLessThanAbs(h, (1-delta)*6*baseSize),
            "bad size for stretchy operator (mtd)")
 
     return 4;
@@ -1525,7 +1524,7 @@
     return 4;
     },
     function () {
-    // test 61: operator dictionary: large operators
+    // test 61: operator dictionary ; large operators
 
     var math = document.getElementById("test61");
     var box = [];
@@ -1543,7 +1542,7 @@
     return 4;
     },
     function () {
-    // test 62: operator dictionary: horizontal stretchy operators
+    // test 62: operator dictionary ; horizontal stretchy operators
 
     var math = document.getElementById("test62");
     var box = [];
@@ -1561,7 +1560,7 @@
     return 4;
     },
     function () {
-    // test 63: operator dictionary: vertical stretchy operators
+    // test 63: operator dictionary ; vertical stretchy operators
 
     var math = document.getElementById("test63");
     var box = [];
@@ -1582,7 +1581,7 @@
     return 4;
     },
     function () {
-    // test 64: operator dictionary: various spacing
+    // test 64: operator dictionary ; various spacing
 
     // be sure that at least spaces are supported
     assert(document.getElementById("test64space").
@@ -1716,30 +1715,30 @@
     function () {
     // test 67: mfrac (RTL)
 
-    num = document.getElementById("test67_numalign").firstElementChild.
+    var num = document.getElementById("test67_numalign").firstElementChild.
       getBoundingClientRect();
-    denum = document.getElementById("test67_numalign").
+    var mfrac = document.getElementById("test67_numalign").
+      getBoundingClientRect();
+
+    assert(almostEqualAbs(num.left, mfrac.left),
+           "numerator should be aligned left")
+
+    mfrac = document.getElementById("test67_denomalign").
+      getBoundingClientRect();
+    denom = document.getElementById("test67_denomalign").
       lastElementChild.getBoundingClientRect();
 
-    assert(almostEqualAbs(num.left, denum.left),
-           "numerator and denominator should be aligned left")
-
-    num = document.getElementById("test67_denomalign").firstElementChild.
-      getBoundingClientRect();
-    denum = document.getElementById("test67_denomalign").
-      lastElementChild.getBoundingClientRect();
-
-    assert(almostEqualAbs(num.right, denum.right),
-           "numerator and denominator should be aligned right")
+    assert(almostEqualAbs(mfrac.right, denom.right),
+           "denominator should be aligned right")
 
     num = document.getElementById("test67_bevelled").firstElementChild.
       getBoundingClientRect();
-    denum = document.getElementById("test67_bevelled").
+    denom = document.getElementById("test67_bevelled").
       lastElementChild.getBoundingClientRect();
 
-    assert(almostLessThanAbs(denum.right, num.left) &&
+    assert(almostLessThanAbs(denom.right, num.left) &&
            almostLessThanAbs(num.top*(1-delta)+num.bottom*delta,
-                             denum.top),
+                             denom.top),
            "incorrect position of mfrac children")
 
     return 5;
@@ -1810,7 +1809,8 @@
     var math = document.getElementById("test69");
 
     assert(almostEqualRel(math.firstElementChild.getBoundingClientRect().left - 
-                          math.lastElementChild.firstElementChild.
+                          math.firstElementChild.nextElementSibling.
+			  firstElementChild.
                           getBoundingClientRect().right, 5 * baseSize),
            "bad position of inner mpadded element")
 
@@ -1823,7 +1823,7 @@
     var msqrtChild = document.getElementById("test70_msqrt").firstElementChild.
       getBoundingClientRect();
     
-    assert(almostLessThanRel(baseSize/3,
+    assert(almostLessThanRel(baseSize * delta,
                              msqrt.right - msqrtChild.right),
            "the square root should be placed on the right");
 
@@ -1966,7 +1966,7 @@
     return 5;
     },
     function () {
-    // test 76:
+    // test 76: linebreak=nobreak
 
     var mstyle = document.getElementById("test76");
     
@@ -1985,7 +1985,7 @@
     return 5;
     },
     function () {
-    // test 77:
+    // test 77: linebreak=goodbreak, badbreak
 
     var mstyle = document.getElementById("test77");
     
@@ -2004,7 +2004,7 @@
     return 5;
     },
     function () {
-    // test 78:
+    // test 78: lineleading
 
     var mstyle = document.getElementById("test78");
 
@@ -2019,7 +2019,7 @@
     return 5;
     },
     function () {
-    // test 79:
+    // test 79: indentalign
 
     var mstyle = document.getElementById("test79");
 
@@ -2027,14 +2027,14 @@
     var box2 = mstyle.firstElementChild.nextElementSibling.
       getBoundingClientRect();
 
-    assert(almostLessThanAbs(box1.bottom, box2.bottom) &&
-           almostEqualAbs(box2.left - box1.left, 2*baseSize),
+    assert(almostLessThanAbs(box1.bottom, box2.top) &&
+           almostLessThanAbs(box1.left + 2 * baseSize, box2.left),
            "bad indentalign")
 
     return 5;
     },
     function () {
-    // test 80: 
+    // test 80: indentshift
 
     var mstyle = document.getElementById("test80");
 
@@ -2042,8 +2042,8 @@
     var box2 = mstyle.firstElementChild.nextElementSibling.
       getBoundingClientRect();
 
-    assert(almostLessThanAbs(box1.bottom, box2.bottom) &&
-           almostEqualAbs(box2.left - box1.left, 2*baseSize),
+    assert(almostLessThanAbs(box1.bottom, box2.top) &&
+           almostLessThanAbs(box1.left + 2*baseSize, box2.left),
            "bad indentshift")
 
     return 5;
@@ -2052,7 +2052,7 @@
     // bucket 6: alignmark and elementary math
 
     function () {
-    // test 81:
+    // test 81: malignmark
 
     assert(almostEqualAbs(
            document.getElementById("test81_1").getBoundingClientRect().right,
@@ -2062,7 +2062,7 @@
     return 6;
     },
     function () { 
-    // test 82:
+    // test 82: groupalign
 
     assert(almostEqualAbs(
            document.getElementById("test82_1").getBoundingClientRect().right,
@@ -2167,18 +2167,16 @@
     // test 89:
 
     var box = [];
-    for (var i = 0; i < 4; i++) {
+    for (var i = 0; i < 3; i++) {
       box[i] = document.getElementById("test89_"+i).getBoundingClientRect();
     }
 
     assert(almostLessThanAbs(box[0].bottom, box[1].top) &&
-           almostEqualAbs(box[1].bottom, box[2].top) &&
-           almostEqualAbs(box[2].bottom, box[3].top),
+           almostEqualAbs(box[1].bottom, box[2].bottom),
            "bad vertical position in mstack")
 
-    assert(almostLessThanAbs(box[1].right, box[2].left) &&
-           almostEqualAbs(box[2].left, box[0].left) &&
-           almostEqualAbs(box[3].right, box[0].right),
+    assert(almostLessThanAbs(box[1].right, box[0].left) &&
+           almostEqualAbs(box[2].right, box[0].right),
            "bad horizontal position in mstack")
 
     return 6;
@@ -2249,8 +2247,8 @@
            "bad alignment (stackalign=left)")
 
     assert(almostLessThanRel(box[2].width, box[3].width) &&
-           almostLessThanAbs((box[2].left + box[2].right)/2,
-                             (box[3].left + box[3].right)/2),
+           almostEqualAbs((box[2].left + box[2].right)/2,
+                          (box[3].left + box[3].right)/2),
            "bad alignment (stackalign=center)")
 
     assert(almostLessThanRel(box[4].width, box[5].width) &&
@@ -2347,7 +2345,7 @@
     mpadded.setAttribute("height", "0");
     mpadded.appendChild(mspace);
 
-    // At this point, the mstyle should will be
+    // At this point, the mstyle will be
     // <mstyle id="test97">
     //   <mrow>
     //     <mo>|</mo>
@@ -2696,9 +2694,9 @@
         <math>
           <semantics id="test8_semantics">
             <mtext>X</mtext>
-            <annotation encoding="application/x-tex">X</annotation>
+            <annotation encoding="application/x-tex">XXXXX</annotation>
             <annotation-xml encoding="application/xhtml+xml">
-              <span>X</span>
+              <span>XXXXX</span>
             </annotation-xml>
           </semantics>
         </math>
@@ -2717,6 +2715,8 @@
             <mtext>X</mtext>
             <mtext>statusline</mtext>
           </maction>
+        </math>
+        <math>
           <maction id="test9_maction3" actiontype="toggle" selection="2">
             <mtext>X</mtext>
             <mtext>selection</mtext>
@@ -2927,7 +2927,6 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
           <mtext id="test16">X</mtext>
           <mrow id="test16mrow"><ms lquote="XXX" rquote="XX">X</ms></mrow>
           <mi id="test16mi">X</mi>
-          <mtext id="test16mi2ref">XX</mtext>
           <mi id="test16mi2">XX</mi>
           <mn id="test16mn">X</mn>
         </math>
@@ -3423,7 +3422,7 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
           <mstyle mathsize="10em" scriptsizemultiplier=".5">
             <mfrac>
               <mtext id="test35_num">X</mtext>
-              <mtext id="test35_denum">X</mtext>
+              <mtext id="test35_denom">X</mtext>
             </mfrac>
           </mstyle>
         </math>
@@ -3437,8 +3436,8 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
                 <mtext id="test35_num2">X</mtext>
               </munder>
               <mover>
-                <mo id="test35_denum1" movablelimits="true">X</mo>
-                <mtext id="test35_denum2">X</mtext>
+                <mo id="test35_denom1" movablelimits="true">X</mo>
+                <mtext id="test35_denom2">X</mtext>
               </mover>
             </mfrac>
           </mstyle>
@@ -3874,14 +3873,14 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
                 <mo id="test55_mo" symmetric="false">|</mo>
               </mtd>
               <mtd rowspan="3">
-                <mspace height="6em" depth="0em"/>
+                <mspace height="3em" depth="3em"/>
               </mtd>
-              <mtd><mspace height="2em" depth="0em"/></mtd>
+              <mtd><mspace height="1em" depth="1em"/></mtd>
             </mtr>
             <mtr>
                 <!-- (2,1) -->
                 <!-- (2,2) -->
-                <mtd><mspace height="2em" depth="0em"/></mtd>
+                <mtd><mspace height="1em" depth="1em"/></mtd>
             </mtr>
             <mtr>
               <mtd><mtext>(3,1)</mtext></mtd>
@@ -4408,9 +4407,10 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
         <!-- test 69: mpadded (RTL) -->
         <math dir="rtl" id="test69">
           <mtext>X</mtext>
-          <mpadded lspace="5em">
+          <mpadded lspace="5em" width="20em">
               <mtext>Y</mtext>
           </mpadded>
+          <mtext>Z</mtext>
         </math>
       </p>
 
@@ -4452,7 +4452,7 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       </p>
 
       <!-- test 73: linebreak=auto, linebreakstyle=before -->
-      <div style="width: 10em;">
+      <div style="width: 10.5em;">
         <math>
           <mstyle id="test73" mathsize="2em">
             <mtext>ABC</mtext> <!-- w1=6 -->
@@ -4467,7 +4467,7 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       </div>
 
       <!-- test 74: linebreak=auto, linebreakstyle=after -->
-      <div style="width: 10em;">
+      <div style="width: 10.5em;">
         <math>
           <mstyle id="test74" mathsize="2em">
             <mtext>ABC</mtext> <!-- w1=6 -->
@@ -4482,7 +4482,7 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       </div>
 
       <!-- test 75: linebreak=newline -->
-      <div style="width: 10em;">
+      <div style="width: 10.5em;">
         <math>
           <mstyle id="test75" mathsize="2em">
             <mtext>A</mtext>               <!--  w1=2 -->
@@ -4494,7 +4494,7 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       </div>
 
       <!-- test 76: linebreak=nobreak -->
-      <div style="width: 20em;">
+      <div style="width: 20.5em;">
         <math>
           <mstyle id="test76" mathsize="2em">
             <mtext>ABC</mtext>             <!--  w0=6 -->
@@ -4509,7 +4509,7 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       </div>
 
       <!-- test 77: linebreak=goodbreak, badbreak -->
-      <div style="width: 20em;">
+      <div style="width: 20.5em;">
         <math>
           <mstyle id="test77" mathsize="2em">
             <mtext>ABC</mtext>               <!--  w0=6 -->
@@ -4524,7 +4524,7 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       </div>
 
       <!-- test 78: lineleading -->
-      <div style="width: 8em;">
+      <div style="width: 8.5em;">
         <math>
           <mstyle id="test78" mathsize="2em">
             <mtext>ABC</mtext>
@@ -4536,7 +4536,7 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       </div>
 
       <!-- test 79: indentalign -->
-      <div style="width: 8em;">
+      <div style="width: 10.5em;">
         <math>
           <mstyle id="test79" mathsize="2em">
             <mtext>ABC</mtext>
@@ -4548,7 +4548,7 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       </div>
 
       <!-- test 80: indentshift -->
-      <div style="width: 8em;">
+      <div style="width: 10.5em;">
         <math>
           <mstyle id="test80" mathsize="2em">
             <mtext>ABC</mtext>
@@ -4637,14 +4637,14 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
         <!-- test 84: groupalign=decimalpoint -->
         <math>
           <!--
-              AB.|.FG
+              ABC|.FG
                12|34
             -->
           <mtable columnalign="right">
             <mtr>
               <mtd>
                 <maligngroup groupalign="decimalpoint"/>
-                <mtext id="test84_1">AB..EF</mtext>
+                <mtext id="test84_1">ABC.EF</mtext>
               </mtd>
             </mtr>
             <mtr>
@@ -4717,6 +4717,8 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
                 <maligngroup/><mtext id="test86_1">EF</mtext>
                 <maligngroup/><mtext id="test86_2">GHIJ</mtext>
               </mtd>
+	    </mtr>
+	    <mtr>
               <mtd groupalign="right left center">
                 <maligngroup/><mtext id="test86_3">01</mtext>
                 <maligngroup/><mtext id="test86_4">234</mtext>
@@ -4741,6 +4743,8 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
                 <maligngroup/><mtext id="test87_1">EF</mtext>
                 <maligngroup/><mtext id="test87_2">GHIJ</mtext>
               </mtd>
+	    </mtr>
+	    <mtr>
               <mtd>
                 <maligngroup/><mtext id="test87_3">01</mtext>
                 <maligngroup/><mtext id="test87_4">234</mtext>
@@ -4765,6 +4769,8 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
                 <maligngroup/><mtext id="test88_1">EF</mtext>
                 <maligngroup/><mtext id="test88_2">GHIJ</mtext>
               </mtd>
+	    </mtr>
+	    <mtr>
               <mtd>
                 <maligngroup/><mtext id="test88_3">01</mtext>
                 <maligngroup/><mtext id="test88_4">234</mtext>
@@ -4920,7 +4926,7 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
                     <mtext id="test98_start">START</mtext>
                     <mtext>
                       <svg width="11em" height="2em">
-                        <text>SVG</text>
+                        <text dy="2em">SVG</text>
                       </svg>
                     </mtext>
                     <semantics>
@@ -4963,6 +4969,17 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
         </math>
       </p>
 
+    </div>
+
+    <div style="position: fixed; border: 1px solid grey;
+                top: 0; left: 0; width: 100%;
+		color: black; font-size: 16pt;
+                background: lightYellow;"
+         onclick="this.style.visibility = 'hidden';">
+      You are running the
+      <abbr title="Mathematical Markup Language">MathML</abbr>
+      Acid3 Test. Are you looking for the
+      <a href="http://acid3.acidtests.org/">classical version</a>?
     </div>
 
   </body>

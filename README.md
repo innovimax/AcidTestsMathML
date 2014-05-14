@@ -25,9 +25,18 @@ classical Acid tests but very few have a decent support for even the
 simplest mathematical constructions. MathML is a very old W3C standard, now
 integrated into HTML5 and EPUB3 so browser vendors can not claim having a
 standard-compliant rendering engine when this one lacks a native MathML
-implementation.
+implementation. Incidentally, here are some references if you wish to follow the development of MathML in browsers:
 
-Of course these tests are not perfect, for example they do not
+* Blink (e.g. Chrome and Opera): [Chromium Dashboard](http://www.chromestatus.com/features/5240822173794304), [Enable MathML](https://code.google.com/p/chromium/issues/detail?id=152430)
+* Gecko (e.g. Firefox): [Implementation Status](https://developer.mozilla.org/en-US/docs/Mozilla/MathML_Project/Status), [MathML 2](https://bugzilla.mozilla.org/show_bug.cgi?id=525772), [MathML 3](https://bugzilla.mozilla.org/show_bug.cgi?id=534959), [MathJax](https://bugzilla.mozilla.org/show_bug.cgi?id=687809)
+* Trident (e.g. Internet Explorer): The development is not public and [all the bug reports for MathML](https://connect.microsoft.com/IE/SearchResults.aspx?SearchQuery=mathml) have been resolved "by design" so far.
+* WebKit (e.g. Safari): [Implementation Status](https://trac.webkit.org/wiki/MathML%20Status), [Master Bug](https://bugs.webkit.org/show_bug.cgi?id=3251), [Basic Support](https://bugs.webkit.org/show_bug.cgi?id=99623), [MathJax](https://bugs.webkit.org/show_bug.cgi?id=84019)
+
+Do you want to see improvements in native MathML support? Then please support [this crowdfunding project](http://www.ulule.com/mathematics-ebooks/):
+
+[![](https://drfhlmcehrc34.cloudfront.net/cache/55/cb/55cbae1648b3e5c8b41c1db73975fa42.png)](http://www.ulule.com/mathematics-ebooks/)
+
+Of course these Acid tests are not perfect, for example they do not
 capture the subjective but important notion of "good-looking mathematical
 expressions". Also, they are supposed to be executed in browsers ; the result
 for other MathML layout engines (including polyfills) should not be considered

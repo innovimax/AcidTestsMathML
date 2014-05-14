@@ -1,35 +1,30 @@
 <!doctype html>
 <html>
  <head>
-  <title>The Acid3 test (description)</title>
+  <title>The MathML Acid3 test (description)</title>
   <meta charset="utf-8"/>
   <style type="text/css">
+    @font-face {
+      font-family: "Acid3MathML";
+      src: url(Acid3MathML-Regular.woff);
+    }
     .framed {
       border: 1px dashed grey;
       background: #ddd;
     }
+
+  /* used in test 99 */
+  math.test99 :first-child { font-size: 2em; }
+  #test99 > mn { font-size: 4em; }
   </style>
  </head>
  <body>
-  <h1>The Acid3 test (description)</h1>
-
-<p><strong>Test 10 contains invalid markup: this is on purpose and
-    intended to check error handling!</strong></p>
-
-<p>
-<strong>In the description of tests,
-"is equal to", "is less than", "is at most"
-etc should be understood as approximate comparisons (see below).
-In particular, there is
-no distinction between e.g. "is less than" or "is at most".
-</strong>
-</p>
-
+  <h1>The MathML Acid3 test (description)</h1>
 
 <h2>Introduction</h2>
 
 <p>The MathML Acid3 test essentially relies on the classical Acid3 and just
-modify the Javascript tests in order to verify some MathML features. Thus the
+modifies the Javascript tests in order to verify some MathML features. Thus the
 requirement to pass the MathML Acid3 is the same:</p>
 
 <p style="border: 1px dotted black; padding: 1em; margin: 1em;">
@@ -46,15 +41,15 @@ test features like colors or links, but these are already verified in the
 MathML Acid2 test. In general, the MathML specification gives some freedom and
 so the corresponding tests are not too strict: for example one test just
 verifies that in an &lt;mfrac&gt; element, the numerator is above a
-denominator and not precise coordinates or sizes.</p>
+denumerator, not precise coordinates or sizes.</p>
 
 <p>Sometimes, a more accurate measurement is necessary. For that purpose,
-the MathML Acid3 test uses a special Acid3MathML family made available as Web
-fonts. These fonts contain characters used in the tests:
+the MathML Acid3 test uses a special Acid3MathML family that is
+made available as Web fonts. These fonts contain characters used in the tests:
 ASCII letters, mathematical alphanumeric Symbols (to test
-<code>mathvariant</code>) and for some operators from the MathML Operator
+<code>mathvariant</code>) and some operators from the MathML Operator
 Dictionary. Their sizes are given by the table below. Test 0 verifies that
-these Web fonts are downloaded and retry several times.
+these Web fonts are downloaded and retry several times if necessary.
 </p>
 
 <table style="margin-left: auto; margin-right: auto; text-align: center;"
@@ -116,10 +111,9 @@ these Web fonts are downloaded and retry several times.
 <p>However, this is still not enough to get perfect measure and results might
 depend on some screen resolution, default font size, whether the page is zoom
 in/out, whether automatic screen resizing is used on some mobile platforms etc
-Hence
-the MathML Acid3 test uses only relative <code>em</code> measures. In test 0,
+The MathML Acid3 test uses only relative <code>em</code> measures. In test 0,
 a <math><mi>baseSize</mi></math> value is determined for the current
-font size of the page. This may vary according to zoom level or automatic
+font size of the page, which may vary according to zoom level or automatic
 screen resizing. Next, the following approximate comparison functions are
 used:</p>
 
@@ -162,7 +156,7 @@ Hence
   <mi>almostLessThanAbs</mi>
   <mo>(</mo><mi>x</mi><mo>,</mo><mi>y</mi><mo>)</mo>
 </math>
-means that <math><mi>x</mi><mo>&lt;</mo><mi>y</mi></math> module a small error.
+means that <math><mi>x</mi><mo>&lt;</mo><mi>y</mi></math> modulo a small error.
 This error is "absolute" once the <math><mi>baseSize</mi></math> is fixed.
 <math><mi>almostLessThanRel</mi></math>
 is "relative" in the sense that the tolerance grows with the magnitude of
@@ -173,6 +167,14 @@ As a rule of thumb,
 while 
 <math><mi>almostLessThanRel</mi></math> is used to compare
 sizes or distances (the tolerance is larger for big or far away objects).
+ Of course, we assume that 
+    <math>
+      <mrow><mo>|</mo><mi>x</mi><mo>|</mo></mrow>
+      <mo>+</mo>
+      <mrow><mo>|</mo><mi>y</mi><mo>|</mo></mrow>
+    </math>
+is nonzero (e.g. the objects have nonzero sizes) and even at least
+<code>baseSize</code>.
 Rationale for the <math><mn>2</mn></math>: if
 <math><mi>x</mi><mo>,</mo><mi>y</mi></math> are objects of size
 <math><mi>S</mi></math> then
@@ -266,7 +268,22 @@ which should be understood as a fraction of some size (e.g. the base size).</p>
 
 <p>Finally, the MathML tests are contained in a div of width 1000em and this is
 assumed to be large enough so that automatic line breaking does not happen by
-default. Of course, tests for the line breaking use narrower containers.</p>
+default. Of course, tests for line breaking use narrower containers.</p>
+
+<h3>Important Remarks</h3>
+
+<ul>
+<li>Test 10 contains invalid markup: this is on purpose and
+    intended to check error handling!</li>
+
+<li>
+From the above discussion about the test approximation, the description below
+will use "lower than", "smaller than", "nonzero" etc
+to mean with a nonnegligible difference (expressed in term of
+<math><mi>ẟ</mi></math>) while
+"at most as low", "at most as large", "zero" etc will mean modulo some
+small error (expressed in term of <math><mi>ε</mi></math>)</li>
+</ul>
 
 <h3>Test 0</h3>
 
@@ -274,7 +291,7 @@ default. Of course, tests for the line breaking use narrower containers.</p>
 
 <ul>
 <li>The "JS required" message is removed.</li>
-<li>Web fonts availability is verified several times.</li>
+<li>Web fonts availability is verified (perhaps several times).</li>
 <li>The <math><mi>baseSize</mi></math> is computed.</li>
 <li>The namespace URI on a <code>&lt;math&gt;</code> is tested and should be
 <code>http://www.w3.org/1998/Math/MathML</code>.</li>
@@ -346,7 +363,9 @@ and <code>&lt;munderover&gt;</code> (left to right):</p>
 <ul>
 <li>The height of the <code>&lt;mrow&gt;</code>
   is less than the heights of the elements that have scripts
-  attached to the BASE.</li>
+  attached to the BASE. The height of elements with one script is less
+  than the height of the corresponding element with two scripts.
+</li>
 
 <li>When the scripts are positioned on the right of the
   base (<code>&lt;msub&gt;</code>,
@@ -365,13 +384,12 @@ and <code>&lt;munderover&gt;</code> (left to right):</p>
 
 <ul>
 <li>The subscripts of <code>&lt;msub&gt;</code> and
-<code>&lt;msubsup&gt;</code> should be lower than the base. This is verified
-by testing that the top (respectively bottom) of the subscripts are lower
-than the top (respectively bottom) of the base. Similarly, the test
+<code>&lt;msubsup&gt;</code> should be lower than the base.
+This is verified by testing that the top of the subscripts are lower
+than the top of the base. Similarly, the test
 checks that the supscripts of 
 <code>&lt;msup&gt;</code> and <code>&lt;msubsup&gt;</code> are higher than
-the base.
-</li>
+the base.</li>
 <li>The sub/super scripts of
   <code>&lt;msub&gt;</code>,
   <code>&lt;msup&gt;</code>, <code>&lt;msubsup&gt;</code>
@@ -384,7 +402,7 @@ the base.
   and <code>&lt;munderover&gt;</code>
 should be placed between the left and
 right coordinates of the base. The test verifies that the
-left coordinate of base is less than the left coordinate of the scripts and
+left coordinate of base is at most the left coordinate of the scripts and
   similarly for the right coordinates.
 </li>
 <li>The under/over scripts of
@@ -398,7 +416,7 @@ Similarly for the underscripts.</li>
 <h3>Test 3: mfrac</h3>
 
 <p>A simple test for the <code>&lt;mfrac&gt;</code> element, where
-  numerator and denominator have the same size.</p>
+  numerator and denumerator have the same size.</p>
 
       <p class="framed">
         <math>
@@ -409,15 +427,12 @@ Similarly for the underscripts.</li>
       </p>
 
 <ul>
-<li>Numerator and denominator should be vertical aligned: 
+<li>Numerator and denumerator should be vertically aligned: 
 the test verifies that the left coordinate of the numerator
 (respectively right coordinate) matches the left coordinate of the
-denominator.</li>
-<li>Numerator should be above denominator
-with enough space to draw the fraction bar. The test verifies that
-the bottom of the numerator plus 3px is at most as low as the top of the
-denumerator. We assume that 3px is the minimum to draw a fraction bar
-that does not touch the numerator and denominator.
+denumerator (respectively right coordinate).</li>
+<li>Numerator should be above denumerator. The test verifies that
+the bottom of the numerator is at most as low as the top of the denumerator.
 </li>
 </ul>
 
@@ -427,17 +442,10 @@ that does not touch the numerator and denominator.
 element:</p>
 
 <ul>
-<li><code>&lt;msqrt&gt;</code> should be at least as large as its child
-with enough space to draw the radical. As for test 3, we assume that we need
-at least 3px to draw the top bar and the radical symbols.
-So the height and width of the <code>&lt;msqrt&gt;</code>
-should be at least 3px more than those of the child.
-</li>
 <li>The square root should be placed on the left. For that purpose we
   verify that the space on the left (the left coordinate of the
   child minus the left coordinate of the <code>&lt;msqrt&gt;</code>) is
-  larger than the space on the right (the right coordinate of the
-  <code>&lt;msqrt&gt;</code> minus the right coordinate of the child)
+  nonzero.
 </li>
 <li>The child should be inside the square root. The test verifies that
 the bottom of the child is at most at low as the bottom of the square root
@@ -457,14 +465,10 @@ element:</p>
 
 <ul>
 <li>The index should be higher than the base. The test checks that the
-top (respectively bottom) of the index is higher than the top
-(respectively bottom) of the base.
+bottom of the index is higher than the bottom of the child.
 </li>
-<li>
-The index should be on the left of the base, with enough space to draw the
-radical. We check that the right coordinate of the index plus 3px is at most
-the left coordinate of the base.</li>
-
+<li>The index should be on the left of the base. The test checks that the
+right coordinate of the index is at most the left coordinate of the child.</li>
 </ul>
 
       <p class="framed">
@@ -473,51 +477,3006 @@ the left coordinate of the base.</li>
         </math>
       </p>
 
-<h3>test 6: menclose (longdiv, box, roundedbox, circle, madruwb)</h3>
+<h3>test 6: menclose (circle, box)</h3>
+
+<p>This is a simple test to verify the support for the box and circle notations
+of menclose. The test contains some nested <code>&lt;menclose&gt;</code>
+elements: an <code>&lt;mtext&gt;</code> element,
+framed with an <code>&lt;menclose&gt;</code> "box",
+circled by a <code>&lt;menclose&gt;</code> "circle",
+framed, and finally circled again.</p>
+
+<p>We assume here that the notations are drawn with
+rectangle and ellipse whose axis are the horizontal/vertical axis of the text
+and
+that the notations do not overlap. Hence the width and height of an
+<code>&lt;menclose&gt;</code>
+"box" should be at least those its content. Simple math shows that the width and
+height of the <code>&lt;menclose&gt;</code> "circle" should be at least
+<math><msqrt><mn>2</mn></msqrt></math> times as large as its content.
+With the previous nesting, the outermost <code>&lt;menclose&gt;</code> is 
+<math>
+  <msup><msqrt><mn>2</mn></msqrt><mn>2</mn></msup>
+  <mo>=</mo><mn>2</mn>
+</math>
+times as large as the inner <code>&lt;mtext&gt;</code>. Hence
+the test verifies the following properties:</p>
+
+<ul>
+<li>The <code>&lt;mtext&gt;</code>
+should be inside the <code>&lt;menclose&gt;</code>.
+This is verified by comparing the
+top, bottom, left and right coordinates.</li>
+<li>The outermost <code>&lt;menclose&gt;</code> should be at least twice as
+large as the child. This is verified by comparing the width.
+</li>
+</ul>
+
+      <p class="framed">
+        <math>
+          <menclose notation="circle" id="test6_menclose">
+            <menclose notation="box">
+              <menclose notation="circle">
+                <menclose notation="box">
+                  <mtext id="test6_mtext">XXX</mtext>
+                </menclose>
+              </menclose>
+            </menclose>
+          </menclose>
+        </math>
+      <p>
 
 <h3>test 7: menclose (equivalent constructions)</h3>
 
+      <p>This test verifies a couple of equivalence for menclose
+  constructions:</p>
+
+<ul>
+  <li>"radical" should be equivalent to the <code>&lt;msqrt&gt;</code>
+  element.</li>
+  <li>"box" should be equivalent to "left right top bottom"</li>
+  <li>"actuarial" should be equivalent to "top right"</li>
+</ul>
+
+  <p>The test only verifies that the size of equivalent constructions are equal.
+    This is a bit lax and thus a rendering engine that does not implement
+    <code>&lt;menclose&gt;</code>
+    at all might actually pass the test. Hence an additional
+    verification is done to exclude this case:
+    the width of an <code>&lt;msqrt&gt;</code> element should not be equal to
+    the width of its content.</p>
+
+      <p class="framed">
+        <math>
+          <msqrt id="test7_radical_ref"><mtext>XXX</mtext></msqrt>
+        </math>
+        <math>
+          <menclose notation="radical" id="test7_radical">
+            <mtext>XXX</mtext>
+          </menclose>
+        </math>
+      </p>
+
+      <p class="framed">
+        <math>
+          <menclose notation="left right top bottom" id="test7_box_ref">
+            <mtext>XXX</mtext>
+          </menclose>
+        </math>
+        <math>
+          <menclose notation="box" id="test7_box">
+            <mtext>XXX</mtext>
+          </menclose>
+        </math>
+      </p>
+
+      <p class="framed">
+        <math>
+          <menclose notation="top right" id="test7_actuarial_ref">
+            <mtext>XXX</mtext>
+          </menclose>
+        </math>
+        <math>
+          <menclose notation="actuarial" id="test7_actuarial">
+            <mtext>XXX</mtext>
+          </menclose>
+        </math>
+      </p>
+
 <h3>test 8: semantics (do not display annotations)</h3>
+
+  <p>This test contains a <code>&lt;semantics&gt;</code>
+    element with an <code>&lt;mtext&gt;</code> child annotated
+    by <code>&lt;annotation&gt;</code> and <code>&lt;annotation-xml&gt;</code>
+    elements of encoding <code>"application/x-tex"</code>
+    and <code>"application/xhtml+xml"</code>.
+    It is assumed that a MathML rendering engine
+    will just display the annotated <code>&lt;mtext&gt;</code>
+    and hide the others. Hence the
+    test verifies that the <code>&lt;semantics&gt;</code> size is the same as
+    the <code>&lt;mtext&gt;</code> child.</p>
+
+      <p class="framed">
+        <math>
+          <semantics id="test8_semantics">
+            <mtext>X</mtext>
+            <annotation encoding="application/x-tex">XXXXX</annotation>
+            <annotation-xml encoding="application/xhtml+xml">
+              <span>XXXXX</span>
+            </annotation-xml>
+          </semantics>
+        </math>
+      </p>
 
 <h3>test 9: maction</h3>
 
+<p>This is similar to test 8, except that <code>&lt;maction&gt;</code>
+elements are used with
+actiontype tooltip, statusline and toggle. In the two first cases, only the
+first element must be visible. In the last case, the selection attribute is
+used to display only the second element. As in test 8, we compare the size
+of the expected visible child with the size of the maction element.</p>
+
+<p class="framed">
+        <math>
+          <maction id="test9_maction1" actiontype="tooltip">
+            <mtext>X</mtext>
+            <mtext>tooltip</mtext>
+          </maction>
+        </math>
+</p>
+<p class="framed">
+        <math>
+          <maction id="test9_maction2" actiontype="statusline">
+            <mtext>X</mtext>
+            <mtext>statusline</mtext>
+          </maction>
+        </math>
+</p>
+<p class="framed">
+        <math>
+          <maction id="test9_maction3" actiontype="toggle" selection="2">
+            <mtext>X</mtext>
+            <mtext>selection</mtext>
+          </maction>
+        </math>
+</p>
+
 <h3>test 10: mrow, mstyle, mphantom</h3>
 
-<h3>test 11: mtable (rows)</h3>
+<p>This test contains a trivial verification about the mrow, mstyle and
+mphantom elements. Basically, they should have the same size as their content:
+</p>
+      <p class="framed">
+        _<math>
+          <mrow id="test10_mrow"><mtext>TEXT</mtext></mrow>
+        </math>_
+      </p>
+      <p class="framed">
+        _<math>
+          <mstyle id="test10_mstyle"><mtext>TEXT</mtext></mstyle>
+        </math>_
+      </p>
+      <p class="framed">
+        _<math>
+          <mphantom id="test10_mphantom"><mtext>TEXT</mtext></mphantom>
+        </math>_
+      </p>
 
-<h3>test 12: mtable (cells)</h3>
+<p>These are combined with a somewhat
+  less easy verification so that the whole test
+  won't pass in browsers without MathML support. Basically we check that
+  an msub with three <code>&lt;mtext&gt;</code>
+  children generates an invalid markup message but
+  not when the two first are grouped into an <code>&lt;mrow&gt;</code> element.
+  Again, we verify the
+  difference by width comparison. We assume that the width of the text in
+  the error message is negligible compared to the width of the
+  <code>&lt;mtext&gt;</code> element.
+  For that purpose, the actual test contains long
+  <code>&lt;mtext&gt;</code> string, rather than
+  just one "X" as below.
+</p>
+
+      <p class="framed">
+        <math>
+          <msub id="test10_noerror">
+            <mrow>
+              <mtext>X</mtext>
+              <mtext>X</mtext>
+            </mrow>
+            <mtext></mtext>
+          </msub>
+        </math>
+      </p>
+      <p class="framed">
+      <math>
+          <msub id="test10_error">
+            <mtext>X</mtext>
+            <mtext>X</mtext>
+            <mtext>
+              <!-- This msub element is intentionally invalid and should
+                   render in a different way than test10_noerror -->
+            </mtext>
+          </msub>
+        </math>
+      </p>
+
+<h3>test 11, 12: mtable (rows, cells)</h3>
+
+<p>These are basic tests on an <code>&lt;mtable&gt;</code> of 3 rows and 3
+columns. Test 11 verifies metrics of <code>&lt;mtr&gt;</code> elements:</p>
+
+<ul>
+<li>mtable rows should have same height.</li>
+<li>mtable rows should be aligned, that is the left/right coordinates of mtr
+elements should match.</li>
+<li>each row should be above its successor, that is the bottom of an mtr element
+should be at most the top of its successor.</li>
+</ul>
+
+<p>Test 12 verifies metrics of mtd elements:</p>
+
+<ul>
+<li>The cells of a given column should be aligned, that is the left/right
+coordinates of mtd elements should match.</li>
+<li>The cells of a given row should be aligned, that is the top/bottom
+coordinates of mtd elements should match.</li>
+<li>Each column should be on the left of the next column. The test verifies
+that the right coordinate of one cell in the column is at most the left
+coordinate of one cell in the next column.</li>
+<li>Similarly for rows, using the bottom/top coordinates</li>
+</ul>
+
+<p class="framed">
+        <math>
+          <mtable id="test11_mtable">
+            <mtr>
+              <mtd><mtext>1</mtext></mtd>
+              <mtd><mtext>2</mtext></mtd>
+              <mtd><mtext>3</mtext></mtd>
+            </mtr>
+            <mtr>
+              <mtd><mtext>4</mtext></mtd>
+              <mtd><mtext>5</mtext></mtd>
+              <mtd><mtext>6</mtext></mtd>
+            </mtr>
+            <mtr>
+              <mtd><mtext>7</mtext></mtd>
+              <mtd><mtext>8</mtext></mtd>
+              <mtd><mtext>9</mtext></mtd>
+            </mtr>
+          </mtable>
+        </math>
+</p>
 
 <h3>test 13: mmultiscripts</h3>
 
+<p>This test contains an <code>&lt;mmultiscripts&gt;</code> element with
+4 prescripts and 4 postscripts. The prescript at the top and right
+as well as the postscript at the bottom right are
+<code>&lt;none&gt;</code> elements. All
+the other scripts have the same size. The test verifies that:</p>
+
+<ul>
+<li>The &lt;none&gt; elements have zero size. This is done by checking that
+  height times width is zero.</li>
+<li>All the other scripts have the same size.</li>
+<li>The horizontal positions of nonempty scripts are correct, that is the test
+verify the left to right positioning of scripts. For example that the right
+coordinate of the base is at most the left coordinate of a postscript.</li>
+<li>The vertical alignment of nonempty scripts, that is the left
+coordinates of some scripts should match.</li>
+<li>The horizontal alignment of nonempty scripts. That is the top coordinate
+of some scripts should match.</li>
+<li>subscripts should be above supscripts, that is the bottom coordinate of
+  a subscript is at most the top coordinate of a supscript.</li>
+<li>subscripts/supscripts should be lower/higher than the base. Same as in
+test 2.</li>
+</ul>
+
+<p class="framed">
+        <math>
+          <mmultiscripts id="test13_mmultiscripts">
+            <mtext>X</mtext>
+            <mtext>X</mtext><mtext>X</mtext>
+            <none/><mtext>X</mtext>
+            <mprescripts/>
+            <mtext>X</mtext><mtext>X</mtext>
+            <mtext>X</mtext><none/>
+          </mmultiscripts>
+        </math>
+</p>
+
 <h3>test 14: mspace</h3>
+
+<p>This test contains two spaces of em dimensions
+(width, height, depth) given by (5, 3, 2) and (15, 4, 6).
+The test verifies that</p>
+
+<ul>
+<li>The widths of the spaces are given by 5 and 15 respectively.</li>
+<li>The (CSS) height is the sum of the (mspace) height and depth, that is
+  5 and 10 respectively.</li>
+<li>The baseline alignement is correct. The test verifies the bottom of the
+second space minus the bottom of the first space is the depth of the second
+minus the depth of the first, that is 4.</li>
+</ul>
+
+      <p class="framed">
+        <math id="test14">
+          <mspace width="5em" height="3em" depth="2em" mathbackground="red"/>
+          <mspace width="15em" height="4em" depth="6em" mathbackground="green"/>
+        </math>
+      </p>
 
 <h3>test 15: mpadded</h3>
 
+<p>This test contains four <code>&lt;mpadded&gt;</code> elements of em
+dimensions
+(width, height, depth) given by (5, 3, 2), (15, 4, 6), (10, 20, 10) and
+(3, 1.5, 1). The fourth is included in the third, with em shift
+(lspace, voffset) given by (2, 2.5). The test verifies that:</p>
+
+<ul>
+<li>The sizes of the mpadded elements are correct</li>
+<li>The first and second mpadded elements are correctly aligned
+  (as in test 14).</li>
+<li>The position of the fourth mpadded inside the third is correct.
+That is the left coordinate of the inner mpadded minus the left coordinate
+of the outer mpadded should be the lspace value. The top coordinate of the
+inner mpadded minus the top coordinate of the outer mpadded should be 
+the difference of (mspace) height minus the voffset.</li>
+</ul>
+
+      <p class="framed">
+        <math id="test15">
+          <mpadded width="5em" height="3em" depth="2em" mathbackground="blue"/>
+          <mpadded width="15em" height="4em" depth="6em" mathbackground="red"/>
+        </math>
+        <math>
+          <mpadded id="test15_mpadded"
+                   width="10em" height="20em" depth="10em"
+                   lspace="2em" voffset="2.5em" mathbackground="green">
+            <mpadded width="3em" height="1.5em" depth="1em"
+         mathbackground="yellow">
+            </mpadded>
+          </mpadded>
+        </math>
+      </p>
+
 <h3>test 16: ms, mi, mn</h3>
+
+  <p>This test contains the following token elements:
+    &lt;mtext&gt;X&lt;/mtext&gt;,
+    &lt;ms lquote="XXX" rquote="XX"&gt;X&lt;/ms&gt;,
+    &lt;mi&gt;X&lt;/mi&gt;,
+    &lt;mi&gt;XX&lt;/mi&gt; and
+    &lt;mn&gt;X&lt;/mn&gt;. The test verifies that:</p>
+
+<ul>
+<li>The width of the ms is 5 times the one of the <code>&lt;mtext&gt;</code>
+(three X's for <code>rquote</code>,
+one inner X and two X's for the <code>lquote</code>).</li>
+<li>The width of the <code>ms</code> and <code>&lt;mtext&gt;</code> are the
+same.</li>
+<li>The width of the "XX" <code>mi</code>
+is twice the one of the <code>&lt;mtext&gt;</code>
+  (an <code>mi</code> with several characters is not slanted)</li>
+<li>The width of the "X"
+<code>mi</code> is <math><mfrac><mn>3</mn><mn>4</mn></mfrac></math>
+the one of the <code>&lt;mtext&gt;</code> (an
+<code>mi</code> with one character is italic, the ratio is from the
+table about Acid3MathML fonts)</li>
+</ul>
+
+      <p class="framed">
+        <math>
+          <mtext id="test16">X</mtext>
+        </math>
+        <math>
+          <mrow id="test16mrow"><ms lquote="XXX" rquote="XX">X</ms></mrow>
+        </math>
+        <math>
+          <mi id="test16mi">X</mi>
+        </math>
+        <math>
+          <mi id="test16mi2">XX</mi>
+        </math>
+        <math>
+          <mn id="test16mn">X</mn>
+        </math>
+      </p>
 
 <h2>Bucket 2: More Advanced Presentation Attributes</h2>
 
-<p>...</p>
+<h3>test 17: mfrac attributes</h3>
+
+  <p>A first test contains an mfrac element with
+    linethickness="2em". It verifies that the total mfrac height is
+    at least the sum of the height of the numerator, denumerator and
+    linethickness and that
+    the bottom of the numerator and the top of the denumerator are separated
+    by at least the linethickness.
+  </p>
+
+      <p class="framed">
+        <math>
+          <mfrac linethickness="2em" id="test17_linethickness">
+            <mtext>X</mtext>
+            <mtext>X</mtext>
+          </mfrac>
+        </math>
+      </p>
+
+  <p>An mfrac element with numerator and denumerator
+    of different sizes is aligned with numalign="left" (respectively an
+    denomalign="right"). The widest child is the 
+    denumerator (respectively numerator) so that the test is nontrivial.
+    The test verifies the alignement with respect to the mfrac element.</p>
+
+      <p class="framed">
+        <math>
+          <mfrac numalign="left" id="test17_numalign">
+            <mtext>X</mtext>
+            <mtext>XXX</mtext>
+          </mfrac>
+        </math>
+        <math>
+          <mfrac denomalign="right" id="test17_denomalign">
+            <mtext>XXX</mtext>
+            <mtext>X</mtext>
+          </mfrac>
+        </math>
+      </p>
+
+  <p>Finally, an mfrac with bevelled="true" is tested. In that case,
+  the right of the numerator is at most the left of the denumerator and
+  the top of the numerator is higher than the top of the denumerator.</p>
+
+      <p class="framed">
+        <math>
+          <mfrac bevelled="true" id="test17_bevelled">
+            <mtext>X</mtext>
+            <mtext>X</mtext>
+          </mfrac>
+        </math>
+      </p>
+
+<h3>test 18: script shifts</h3>
+
+<p>This test verifies the subscriptshift/superscriptshift attributes for
+  the msub, msup and msubsup elements. The base is a square of size 4em
+  and the shift is 6em. Hence the test verifies that the vertical gap between
+  the base and the script is at least 2em.</p>
+
+      <p class="framed">
+        <math>
+          <msub id="test18_msub" subscriptshift="6em">
+           <mspace width="4em" height="2em" depth="2em" mathbackground="red"/>
+           <mspace width="4em" height="2em" depth="2em" mathbackground="green"/>
+          </msub>
+        </math>
+      </p>
+      <p class="framed">
+        <math>
+          <msup id="test18_msup" superscriptshift="6em">
+           <mspace width="4em" height="2em" depth="2em" mathbackground="red" />
+           <mspace width="4em" height="2em" depth="2em" mathbackground="green"/>
+          </msup>
+        </math>
+      </p>
+
+      <p class="framed">
+        <math>
+          <msubsup id="test18_msubsup"
+                   subscriptshift="6em" superscriptshift="6em">
+           <mspace width="4em" height="2em" depth="2em" mathbackground="red"/>
+           <mspace width="4em" height="2em" depth="2em" mathbackground="green"/>
+           <mspace width="4em" height="2em" depth="2em" mathbackground="blue"/>
+          </msubsup>
+        </math>
+      </p>
+
+<h3>test 19: munder/mover/munderover align</h3>
+
+<p>This test verifies the align attribute of the munder/mover/munderover, that
+is whether the base and scripts are aligned with respect to their left, center
+or right. Additionally, the base is checked to be at most three times larger
+than the scripts, so that the test is nontrivial.</p>
+
+      <p class="framed">
+        <math>
+          <munder align="left" id="test19_munder_left">
+            <mtext>XXX</mtext>
+            <mtext>X</mtext>
+          </munder>
+        </math>
+        <math>
+          <munder id="test19_munder_center">
+            <mtext>XXX</mtext>
+            <mtext>X</mtext>
+          </munder>
+        </math>
+        <math>
+          <munder align="right" id="test19_munder_right">
+            <mtext>XXX</mtext>
+            <mtext>X</mtext>
+          </munder>
+        </math>
+      </p>
+
+      <p class="framed">
+        <math>
+          <mover align="left" id="test19_mover_left">
+            <mtext>XXX</mtext>
+            <mtext>X</mtext>
+          </mover>
+        </math>
+        <math>
+          <mover id="test19_mover_center">
+            <mtext>XXX</mtext>
+            <mtext>X</mtext>
+          </mover>
+        </math>
+        <math>
+          <mover align="right" id="test19_mover_right">
+            <mtext>XXX</mtext>
+            <mtext>X</mtext>
+          </mover>
+        </math>
+      </p>
+
+      <p class="framed">
+        <math>
+          <munderover align="left" id="test19_munderover_left">
+            <mtext>XXX</mtext>
+            <mtext>X</mtext>
+            <mtext>X</mtext>
+          </munderover>
+        </math>
+        <math>
+          <munderover id="test19_munderover_center">
+            <mtext>XXX</mtext>
+            <mtext>X</mtext>
+            <mtext>X</mtext>
+          </munderover>
+        </math>
+        <math>
+          <munderover align="right" id="test19_munderover_right">
+            <mtext>XXX</mtext>
+            <mtext>X</mtext>
+            <mtext>X</mtext>
+          </munderover>
+        </math>
+      </p>
+
+<h3>test 20: munder/mover/munderover: accent, accentunder (position)</h3>
+
+<p>This test verifies the effect of the accent and accentunder attributes.
+Here, the test verifies that an accent script is drawn closer to the base than
+a normal script. See also test 33 for the size comparison. A small
+verification is done to check that the distance between the base and
+script is nonzero.</p>
+
+      <p class="framed">
+        <math>
+          <munder>
+            <mtext id="test20_munder11">X</mtext>
+            <mtext id="test20_munder12">X</mtext>
+          </munder>
+        </math>
+        <math>
+          <munder accentunder="true">
+            <mtext id="test20_munder21">X</mtext>
+            <mtext id="test20_munder22">X</mtext>
+          </munder>
+        </math>
+      </p>
+
+      <p class="framed">
+        <math>
+          <mover>
+            <mtext id="test20_mover11">X</mtext>
+            <mtext id="test20_mover12">X</mtext>
+          </mover>
+        </math>
+        <math>
+          <mover accent="true">
+            <mtext id="test20_mover21">X</mtext>
+            <mtext id="test20_mover22">X</mtext>
+          </mover>
+        </math>
+      </p>
+
+      <p class="framed">
+        <math>
+          <munderover>
+            <mtext id="test20_munderover11">X</mtext>
+            <mtext id="test20_munderover12">X</mtext>
+            <mtext id="test20_munderover13">X</mtext>
+          </munderover>
+        </math>
+        <math>
+          <munderover accent="true" accentunder="true">
+            <mtext id="test20_munderover21">X</mtext>
+            <mtext id="test20_munderover22">X</mtext>
+            <mtext id="test20_munderover23">X</mtext>
+          </munderover>
+        </math>
+      </p>
+
+<h3>test 21: mtable align</h3>
+
+<p>This test verifies the alignement of mtable with respect to the baseline
+when the align attribute is (from left to right) top, bottom,
+the bottom of the second row and the top of the penultimate row.</p>
+
+      <p class="framed">
+        <math>
+          <mspace id="test21_axis" height="1px" depth="1px" width="100px"
+      mathbackground="red"/>
+          <mtable id="test21_table1" align="top" mathcolor="green">
+            <mtr><mtd><mtext>X</mtext></mtd></mtr>
+          </mtable>
+          <mtable id="test21_table2" align="bottom" mathcolor="blue">
+            <mtr><mtd><mtext>X</mtext></mtd></mtr>
+          </mtable>
+          <mtable align="bottom 2" mathcolor="purple">
+            <mtr><mtd><mtext>X</mtext></mtd></mtr>
+            <mtr id="test21_row1"><mtd><mtext>X</mtext></mtd></mtr>
+            <mtr><mtd><mtext>X</mtext></mtd></mtr>
+            <mtr><mtd><mtext>X</mtext></mtd></mtr>
+          </mtable>
+          <mtable align="top -2" mathcolor="silver">
+            <mtr><mtd><mtext>X</mtext></mtd></mtr>
+            <mtr><mtd><mtext>X</mtext></mtd></mtr>
+            <mtr id="test21_row2"><mtd><mtext>X</mtext></mtd></mtr>
+            <mtr><mtd><mtext>X</mtext></mtd></mtr>
+          </mtable>
+          <mspace id="test21_axis2" height="1px" depth="1px" width="100px"
+      mathbackground="red"/>
+        </math>
+      </p>
+
+
+<h3>test 22: mtable rowalign, columnalign</h3>
+
+<p>This test verifies the effect of <code>rowalign/columnalign</code> on
+<code>mtable</code>, <code>mtr</code> and <code>mtd</code>
+elements. We have a table of 2 rows and 2 columns whose alignment
+value on cells is (from left to right and top to bottom):
+rowalign=bottom, columnalign=left ;
+rowalign=bottom, columnalign=right,
+rowalign=top, columnalign=left ; and rowalign=top, columnalign=right. The
+cells contain spaces of different sizes and thus a small test ensures that
+those spaces have nonzero sizes.
+</p>
+
+      <p class="framed">
+        <math>
+          <mtable rowalign="top bottom" columnalign="right left">
+            <mtr rowalign="bottom" columnalign="left right">
+              <mtd id="test22_cell0">
+                <!-- [rowalign=bottom], (columnalign=left) -->
+                <mspace width="1em" height="3em" depth="0em"
+      mathbackground="red"/>
+              </mtd>
+              <mtd id="test22_cell1">
+                <!-- [rowalign=bottom], ((columnalign=right)) -->
+                <mspace width="15em" height="15em" depth="0em"
+      mathbackground="blue"/>
+              </mtd>
+            </mtr>
+            <mtr rowalign="top">
+              <mtd id="test22_cell2" columnalign="left">
+                <!-- [[rowalign=top]], (columnalign=left) -->
+                <mspace width="1.5em" height="3em" depth="0em"
+      mathbackground="green"/>
+              </mtd>
+              <mtd id="test22_cell3" columnalign="right">
+                <!-- [[rowalign=top]], ((columnalign=right)) -->
+                <mspace width="4em" height="4.5em" depth="0em"
+      mathbackground="purple"/>
+              </mtd>
+            </mtr>
+          </mtable>
+        </math>
+      </p>
+
+
+<h3>test 23: mtable columnwidth</h3>
+
+<p>This test contains a with two columns whose width is set by
+the columnwidth attribute to "1em" and "2em".</p>
+
+      <p class="framed">
+        <math>
+          <mtable columnwidth="1em 2em">
+            <mtr>
+              <mtd id="test23_cell1" mathbackground="red">
+    <mtext>X</mtext></mtd>
+              <mtd id="test23_cell2" mathbackground="blue">
+    <mtext>X</mtext></mtd>
+            </mtr>
+          </mtable>
+        </math>
+      </p>
+
+<h3>test 24: mtable width</h3>
+
+<p>This test contains a table with a single cell. The width attribute is used
+to set the width of the table to "5em".</p>
+
+      <p class="framed">
+        <math>
+          <mtable id="test24" width="5em" mathbackground="red">
+            <mtr><mtd><mtext>X</mtext></mtd></mtr>
+          </mtable>
+        </math>
+      </p>
+
+<h3>test 25: mtable rowspacing, columnspacing</h3>
+
+<p>This test contains two almost identical mtable elements with four rows and
+four columns. Their (rowspacing, columnspacing) attributes are set to
+("1em 1.5em 2em", "1.5em 2.5em 3em") and
+("3em 4.5em 2em", "3.5em 5.5em 7em") respectively. The test verifies
+that height of the first table minus the height of the second table is the
+difference of the sum of rowspacing values. Similarly for the width and
+columnspacing values.</p>
+
+
+      <p class="framed">
+        <math>
+          <mtable id="test25_1"
+                  rowspacing="1em 1.5em 2em"
+                  columnspacing="1.5em 2.5em 3em">
+            <mtr>
+              <mtd>
+                <mtext>X</mtext>
+                <mtext>X</mtext>
+                <mtext>X</mtext>
+                <mtext>X</mtext>
+              </mtd>
+            </mtr>
+            <mtr>
+              <mtd>
+                <mtext>X</mtext>
+                <mtext>X</mtext>
+                <mtext>X</mtext>
+                <mtext>X</mtext>
+              </mtd>
+            </mtr>
+            <mtr>
+              <mtd>
+                <mtext>X</mtext>
+                <mtext>X</mtext>
+                <mtext>X</mtext>
+                <mtext>X</mtext>
+              </mtd>
+            </mtr>
+            <mtr>
+              <mtd>
+                <mtext>X</mtext>
+                <mtext>X</mtext>
+                <mtext>X</mtext>
+                <mtext>X</mtext>
+              </mtd>
+            </mtr>
+          </mtable>
+        </math>
+        <math>
+          <mtable id="test25_2"
+                  rowspacing="3em 4.5em 2em"
+                  columnspacing="3.5em 5.5em 7em">
+            <mtr>
+              <mtd>
+                <mtext>X</mtext>
+                <mtext>X</mtext>
+                <mtext>X</mtext>
+                <mtext>X</mtext>
+              </mtd>
+            </mtr>
+            <mtr>
+              <mtd>
+                <mtext>X</mtext>
+                <mtext>X</mtext>
+                <mtext>X</mtext>
+                <mtext>X</mtext>
+              </mtd>
+            </mtr>
+            <mtr>
+              <mtd>
+                <mtext>X</mtext>
+                <mtext>X</mtext>
+                <mtext>X</mtext>
+                <mtext>X</mtext>
+              </mtd>
+            </mtr>
+            <mtr>
+              <mtd>
+                <mtext>X</mtext>
+                <mtext>X</mtext>
+                <mtext>X</mtext>
+                <mtext>X</mtext>
+              </mtd>
+            </mtr>
+          </mtable>
+        </math>
+      </p>
+
+
+
+<h3>test 26: side</h3>
+
+<p>This test contains a mlabeledtr element with a LABEL and an EQUATION. The
+parent <code>mtable</code> contains a
+<code>side="right"</code> attribute so the LABEL should be
+displayed on the right of the EQUATION.</p>
+
+      <p class="framed">
+        <math>
+          <mtable side="right">
+            <mlabeledtr>
+              <mtd id="test26_label"><mtext>LABEL</mtext></mtd>
+              <mtd id="test26_equation"><mtext>EQUATION</mtext></mtd>
+            </mlabeledtr>
+          </mtable>
+        </math>
+      </p>
+
+<h3>test 27: minlabelspacing</h3>
+
+<p>This test contains a mlabeledtr element with a LABEL and an EQUATION.
+The minlabelspacing on the parent table is "2em" so the test verifies that
+the distance between the LABEL and the EQUATION is at most that wide.</p>
+
+      <p class="framed"> 
+        <math>
+          <mtable side="left" minlabelspacing="2em">
+            <mlabeledtr>
+              <mtd id="test27_label"><mtext>LABEL</mtext></mtd>
+              <mtd id="test27_equation"><mtext>EQUATION</mtext></mtd>
+            </mlabeledtr>
+          </mtable>
+        </math>
+      </p>
+
+
+<h3>test 28: mtable framespacing</h3>
+
+<p>As in test 25, we have two almost identical tables and compare the
+difference of size between the two tables. The tables have different
+framespacing values and the difference should match the difference
+of height/width of the two tables.</p>
+
+      <p class="framed">
+        <!-- test 28: mtable framespacing -->
+        <math id="test28_framespacing1">
+          <mtable frame="solid" framespacing="1em 1.5em">
+            <mtr><mtd><mtext>X</mtext></mtd></mtr>
+          </mtable>
+        </math>
+        <math id="test28_framespacing2">
+          <mtable frame="solid" framespacing="2.5em 4em">
+            <mtr><mtd><mtext>X</mtext></mtd></mtr>
+          </mtable>
+        </math>
+      </p>
+
+
+<h3>test 29: mtable equalrows, equalcolumns</h3>
+
+<p>As in test 22, this is a table of four cells of different sizes and a small
+test verifies that the mspace element used is indeed supported. The table has
+equalrow and equalcolumns set to true and so the actual test measures that this
+is the case.</p>
+
+      <p class="framed">
+        <math>
+          <mtable equalrows="true" equalcolumns="true">
+            <mtr>
+              <mtd id="test29_cell0">
+                <mspace width="10em" height="10em" depth="0em"
+      mathbackground="red"/>
+              </mtd>
+              <mtd id="test29_cell1">
+                <mspace width="8em" height="5em" depth="0em"
+      mathbackground="blue"/>
+              </mtd>
+            </mtr>
+            <mtr>
+              <mtd id="test29_cell2">
+                <mspace width="2em" height="3em" depth="0em"
+      mathbackground="green"/>
+              </mtd>
+              <mtd id="test29_cell3">
+                <mspace width="4em" height="2em" depth="0em"
+      mathbackground="silver"/>
+              </mtd>
+            </mtr>
+          </mtable>
+        </math>
+      </p>
+
+
+<h3>test 30: mtd rowspan, columnspan</h3>
+
+<p>This test contains a table with two cells that have rowspan="2" and
+columnspan="2" respectively. The test verifies that these cells have same
+height/width as the adjacents cells.</p>
+
+      <p class="framed">
+        <math>
+          <mtable>
+            <mtr>
+              <mtd id="test30_cell0" rowspan="2"
+       mathbackground="red"><mtext>X</mtext></mtd>
+              <mtd id="test30_cell1" columnspan="2"
+       mathbackground="blue"><mtext>X</mtext></mtd>
+            </mtr>
+            <mtr>
+              <mtd id="test30_cell2"><mtext>X</mtext></mtd>
+              <mtd id="test30_cell3"><mtext>X</mtext></mtd>
+            </mtr>
+          </mtable>
+        </math>
+      </p>
+
+
+<h3>test 31: mathsize</h3>
+
+<p>This is just a fragment of text with mathsize="2em" and thus the test
+verifies that its size is as expected twice as large as the base size.</p>
+
+      <p class="framed">
+        <math>
+          <mtext mathsize="2em" id="test31">XXX</mtext>
+        </math>
+      </p>
+
+<h3>test 32: mathvariant</h3>
+
+<p>This test contains some text with different mathvariant values. The widths
+are measured and verified to match the values indicated in the table about
+Acid3MathML fonts:</p>
+
+      <p class="framed">
+        <math>
+          <mstyle id="test32">
+            <mtext>0</mtext>
+            <mi mathvariant="bold">A</mi>
+            <mi mathvariant="script">B</mi>
+            <mi mathvariant="fraktur">C</mi>
+            <mi mathvariant="bold-italic">D</mi>
+            <mi mathvariant="bold-script">E</mi>
+            <mi mathvariant="bold-fraktur">F</mi>
+            <mi mathvariant="sans-serif">G</mi>
+            <mi mathvariant="double-struck">H</mi>
+            <mi mathvariant="bold-sans-serif">I</mi>
+            <mi mathvariant="sans-serif-italic">J</mi>
+            <mi mathvariant="sans-serif-bold-italic">K</mi>
+            <mi mathvariant="monospace">L</mi>
+            <mi mathvariant="italic">M</mi>
+          </mstyle>
+        </math>
+      </p>
+
+<p>Note that it should render exactly the same as if the corresponding
+Unicode code points were used instead of mathvariant:</p>
+
+      <p  class="framed">
+       <math>
+          <mstyle>
+            <mtext>0</mtext>
+            <mtext>𝐀</mtext>
+            <mtext>ℬ</mtext>
+            <mtext>ℭ</mtext>
+            <mtext>𝑫</mtext>
+            <mtext>𝓔</mtext>
+            <mtext>𝕱</mtext>
+            <mtext>𝖦</mtext>
+            <mtext>ℍ</mtext>
+            <mtext>𝗜</mtext>
+            <mtext>𝘑</mtext>
+            <mtext>𝙆</mtext>
+            <mtext>𝙻</mtext>
+            <mtext>𝑀</mtext>
+          </mstyle>
+        </math>
+      </p>
 
 <h2>Bucket 3: Displaystyle, Scriptlevel and Operators</h2>
 
-<p>...</p>
+<h3>test 33: munder/mover/munderover: accent, accentunder (size)</h3>
+
+<p>This is the same as test 20, but we verify that an accent script is larger
+than a normal script, because the scriptlevel is not incremented.</p>
+
+<h3>test 34: movablelimits</h3>
+
+<p>This test contains mover/munder elements with movablelimits="true". The
+first has displaystyle="true" and so the script should be above the base
+while the second has  displaystyle="false" and so the script should be next
+to the base. The test verifies positions as in test 2.</p>
+
+      <p class="framed">
+        <math>
+          <mstyle displaystyle="true">
+            <mover>
+              <mo id="test34_1" movablelimits="true">XXX</mo>
+              <mtext id="test34_2">X</mtext>
+            </mover>
+          </mstyle>
+        </math>
+        <math>
+          <munder>
+            <mo id="test34_3" movablelimits="true">X</mo>
+            <mtext id="test34_4">X</mtext>
+          </munder>
+        </math>
+      </p>
+
+
+<h3>test 35: mfrac, scriptsizemultiplier</h3>
+
+<p>This contains two tests. The first one is an mfrac with mathsize="10em" with
+scriptsizemultiplier=".5" and since the scriptlevel is increased by one in
+the numerator/denumerator, the size becomes "5em". We assume that
+the scriptminsize is not reached.</p>
+
+      <p class="framed">
+        <math>
+          <mstyle mathsize="10em" scriptsizemultiplier=".5">
+            <mfrac>
+              <mtext id="test35_num">X</mtext>
+              <mtext id="test35_denom">X</mtext>
+            </mfrac>
+          </mstyle>
+        </math>
+      </p>
+
+<p>The second is an mfrac in displaystyle="true". Using the
+technique of test 34 with movablelimits, we verify that the displaystyle
+is reset in the numerator/denumerator: the munder/mover elements should
+have their scripts on the right.</p>
+
+      <p class="framed">
+        <math>
+          <mstyle displaystyle="true">
+            <mfrac>
+              <munder>
+                <mo id="test35_num1" movablelimits="true">X</mo>
+                <mtext id="test35_num2">X</mtext>
+              </munder>
+              <mover>
+                <mo id="test35_denom1" movablelimits="true">X</mo>
+                <mtext id="test35_denom2">X</mtext>
+              </mover>
+            </mfrac>
+          </mstyle>
+        </math>
+      </p>
+
+<h3>test 36: mroot</h3>
+
+<p>This is similar to test 35 for mroot. We verify that 
+displaystyle is reset within the mroot index and that 
+scriptlevel is increased by 2</p>
+
+      <p class="framed">
+        <math>
+          <mstyle displaystyle="true"
+                  mathsize="5em" scriptsizemultiplier=".5">
+            <mroot>
+              <mtext>
+                BASE
+              </mtext>
+              <mover>
+                <mo id="test36_1" movablelimits="true">X</mo>
+                <mtext id="test36_2">X</mtext>
+              </mover>
+            </mroot>
+          </mstyle>
+        </math>
+      </p>
+
+<h3>test 37: msup script</h3>
+
+<p>This is similar to test 35 for msub. We verify that 
+displaystyle is reset within the msup script and that 
+scriptlevel is increased by 1.</p>
+
+      <p class="framed">
+        <math>
+          <mstyle displaystyle="true"
+                  mathsize="5em" scriptsizemultiplier=".5">
+            <msup>
+              <mtext>
+                BASE
+              </mtext>
+              <mover>
+                <mo id="test37_1" movablelimits="true">X</mo>
+                <mtext id="test37_2">X</mtext>
+              </mover>
+            </msup>
+          </mstyle>
+        </math>
+      </p>
+
+<h3>test 38: munder script</h3>
+
+<p>This is similar to test 35 for munder. We verify that 
+displaystyle is reset within the munder script and that 
+scriptlevel is increased by 1.</p>
+
+      <p class="framed">
+        <math>
+          <mstyle displaystyle="true"
+                  mathsize="5em" scriptsizemultiplier=".5">
+            <munder>
+              <mtext>
+                BASE
+              </mtext>
+              <mover>
+                <mo id="test38_1" movablelimits="true">X</mo>
+                <mtext id="test38_2">X</mtext>
+              </mover>
+            </munder>
+          </mstyle>
+        </math>
+      </p>
+
+<h3>test 39: mo accent</h3>
+
+<p>This is similar to test 38 with an accent script. In that case, the
+scriptlevel should not increase.</p>
+
+      <p class="framed">
+        <math>
+          <mstyle displaystyle="true"
+                  mathsize="5em" scriptsizemultiplier=".5">
+            <mover>
+              <mtext>
+                BASE
+              </mtext>
+              <mo accent="true" id="test39">X</mo>
+            </mover>
+          </mstyle>
+        </math>
+      </p>
+
+<h3>test 40: mo largeop</h3>
+
+<p>This test contains three summation symbols. One in displaystyle="true" and
+(and largeop="true" per the operator dictionary). A second one in
+displaystyle="true" but largeop="false". And a third one with
+displaystyle="false". The first should be larger than the others and the
+two last symbols should have the same size.</p>
+
+      <p class="framed">
+        <math>
+          <mstyle mathsize="5em">
+            <mstyle displaystyle="true">
+              <mo id="test40_sum1">∑</mo>
+            </mstyle>
+            <mstyle displaystyle="true">
+              <mo largeop="false" id="test40_sum2">∑</mo>
+            </mstyle>
+            <mstyle displaystyle="false">
+              <mo id="test40_sum3">∑</mo>
+            </mstyle>
+          </mstyle>
+        </math>
+      </p>
+
+<h3>test 41: scriptlevel</h3>
+
+<p>This test contains a text with mathsize="8em" and scriptsizemultiplier=".5".
+A scriptlevel="2" attribute is used to force the scriptlevel and thus the final
+size should be 2em.</p>
+
+      <p class="framed">
+        <math>
+          <mstyle mathsize="8em" scriptsizemultiplier=".5">
+            <mstyle scriptlevel="2">
+              <mtext id="test41">X</mtext>
+            </mstyle>
+          </mstyle>
+        </math>
+      </p>
+
+<h3>test 42: scriptminsize</h3>
+
+<p>This is similar to test 41: the initial size is 32em, the
+scriptsizemultiplier is .5 and the scriptlevel is set to 5. In theory,
+the size should become 1em. However, the scriptminsize is set to 8em, so this
+should be the value used instead.</p>
+
+      <p class="framed">
+        <math>
+          <mstyle mathsize="32em" scriptsizemultiplier=".5"
+                  scriptminsize="8em">
+            <mstyle scriptlevel="5">
+              <mtext id="test42">X</mtext>
+            </mstyle>
+          </mstyle>
+        </math>
+      </p>
+
+<h3>test 43: mo lspace, rspace</h3>
+
+<p>This is a simple "X" operator with lspace="3.5em" and rspace="4em". Hence
+the total distance between the previous and next element should be 10.5em</p>
+
+      <p class="framed">
+        <math id="test43">
+          <mtext>X</mtext>
+          <mo lspace="3.5em" rspace="4em">X</mo>
+          <mtext>X</mtext>
+        </math>
+      </p>
+
+<h3>test 44: mo stretchy</h3>
+
+<p>This contains two parenthesis next to space of total height 6em.
+The first has
+stretchy="false" and should not stretch while the second has stretchy="true"
+and should stretch.</p>
+
+      <p class="framed">
+        <math>
+          <mrow>
+            <mo id="test44_1" stretchy="false">(</mo>
+            <mspace height="3em" depth="3em" width="1px" mathbackground="red"/>
+          </mrow>
+        </math>
+        <math>
+          <mrow>
+            <mo id="test44_2" stretchy="true">(</mo>
+            <mspace height="3em" depth="3em" width="1px" mathbackground="blue"/>
+          </mrow>
+        </math>
+      </p>
+
+<h3>test 45: mo symmetric</h3>
+
+<p>This is similar to test 44, but the space has height 9em and depth 1em.
+Instead of largeop, we test symmetric. When it is true, the parenthesis
+symmetrically (height=18em) otherwise it should not (height=10em).</p>
+
+      <p class="framed">
+        <math>
+          <mrow>
+            <mo symmetric="true" id="test45_1">(</mo>
+            <mspace height="9em" depth="1em" width="1px" mathbackground="red"/>
+          </mrow>
+        </math>
+        <math>
+          <mrow>
+            <mo symmetric="false" id="test45_2">(</mo>
+            <mspace height="9em" depth="1em" width="1px" mathbackground="blue"/>
+          </mrow>
+        </math>
+      </p>
+
+<h3>test 46: mo maxsize</h3>
+
+<p>Again we have an mspace element of total height 20em and check the height
+of an adjacent stretchy operator. maxsize is set to "10em" so the operator
+should stretch, but at most to that size.</p>
+
+      <p class="framed">
+        <math>
+          <mrow>
+            <mo id="test46" maxsize="10em">(</mo>
+            <mspace height="10em" depth="10em"
+        width="1px" mathbackground="blue"/>
+          </mrow>
+        </math>
+      </p>
+
+<h3>test 47: mo minsize</h3>
+
+<p>This is similar to test 46, but with an mspace element of total height
+2em and an operator with minsize="10em". Hence the operator should stretch
+to that size.</p>
+
+      <p class="framed">
+        <math>
+          <mrow>
+            <mo id="test47" minsize="10em">(</mo>
+            <mspace height="1em" depth="1em"
+        width="1px" mathbackground="blue"/>
+          </mrow>
+        </math>
+      </p>
+
+<h3>test 48: form</h3>
+
+<p>This test contains two minus operators with form attribute set to infix and
+prefix respectively. Per the operator dictionary, the (rspace, lspace)
+values should be (mediummathspace, mediummathspace) and
+(0, veryverythinmathspace) respectively. We perform a verification similar
+to the one of test 43.</p>
+
+     <p  class="framed">
+       <math mathsize="2em">
+         <mrow id="test48_infix">
+           <mn>0</mn><mo form="infix">−</mo><mn>1</mn>
+         </mrow>
+       </math> ;
+       <math mathsize="2em">
+         <mrow id="test48_prefix">
+           <mn>2</mn><mo form="prefix">−</mo><mn>3</mn>
+         </mrow>
+       </math>
+
+      </p>
 
 <h2>Bucket 4: More Features of Operators</h2>
 
-<p>...</p>
+<h3>test 49: Default value of the form attribute</h3>
+
+<p>This test is similar to test 48, except that we let the rendering engine
+determines the default value of the form attribute. The
+<a href="http://www.w3.org/TR/MathML/chapter3.html#presm.formdefval">
+four rules</a> given in the MathML specification are verified.</p>
+
+<h3>test 50: embellished operators</h3>
+
+<p>This test contains various
+<a href="http://www.w3.org/TR/MathML/chapter3.html#id.3.2.5.7.3">
+embellished operators</a> near an mspace element of size 20em. Hence the
+operator at the core should stretch to that size.</p>
+
+    <p class="framed">
+       <math>
+         <mrow>
+           <mspace height="10em" depth="10em"/>
+           <mo id="test50_mo0">|</mo>
+           <msup><mo id="test50_mo1">|</mo><mn>X</mn></msup>
+           <msub><mo id="test50_mo2">|</mo><mn>X</mn></msub>
+           <msubsup>
+             <mo id="test50_mo3">|</mo>
+             <mn>X</mn>
+             <mn>X</mn>
+           </msubsup>
+           <munder><mo id="test50_mo4">|</mo><mn>X</mn></munder>
+           <mover><mo id="test50_mo5">|</mo><mn>X</mn></mover>
+           <munderover>
+             <mo id="test50_mo6">|</mo>
+             <mn>X</mn>
+             <mn>X</mn>
+           </munderover>
+           <mmultiscripts>
+             <mo id="test50_mo7">|</mo>
+             <mn>X</mn>
+             <mn>X</mn>
+             <mprescripts/>
+             <mn>X</mn>
+             <mn>X</mn>
+           </mmultiscripts>
+           <semantics>
+             <mo id="test50_mo8">|</mo>
+             <annotation encoding="plain/text">X</annotation>
+           </semantics>
+           <mstyle>
+             <mo id="test50_mo9">|</mo>
+           </mstyle>
+           <mphantom>
+             <mo id="test50_mo10">|</mo>
+           </mphantom>
+           <mpadded>
+             <mo id="test50_mo11">|</mo>
+           </mpadded>
+           <maction actiontype="toggle" selection="2">
+             <mn>NOTSELECTED</mn>
+             <mo id="test50_mo12">|</mo>
+           </maction>
+           <mrow>
+             <mo id="test50_mo13">|</mo>
+           </mrow>
+         </mrow>
+       </math>
+     </p>
+
+
+<h3>test 51: space-like elements</h3>
+
+<p>This test contains various mrow elements with an operator and
+a <a href="http://www.w3.org/TR/MathML/chapter3.html#id.3.2.7.4">
+space-like</a> element. Hence these mrow elements are embellished operators
+and we use a verification similar to the one of test 50.</p>
+
+     <p class="framed">
+       <math>
+         <mrow>
+           <mspace height="10em" depth="10em"/>
+           <mrow><mo id="test51_mo0">|</mo><mtext>S</mtext></mrow>
+           <mrow><mo id="test51_mo1">|</mo><mspace/></mrow>
+           <mrow>
+             <mo id="test51_mo2">|</mo>
+             <mstyle><mspace/><mtext>S</mtext></mstyle>
+           </mrow>
+           <mrow>
+             <mo id="test51_mo3">|</mo>
+             <mphantom><mspace/><mtext>S</mtext></mphantom>
+           </mrow>
+           <mrow>
+             <mo id="test51_mo4">|</mo>
+             <mpadded><mspace/><mtext>S</mtext></mpadded>
+           </mrow>
+           <mrow>
+             <mo id="test51_mo5">|</mo>
+             <mrow><mspace/><mtext>S</mtext></mrow>
+           </mrow>
+           <mrow>
+             <mo id="test51_mo6">|</mo>
+             <maction actiontype="toggle" selection="2">
+               <mi>X</mi>
+               <mspace/>
+             </maction>
+           </mrow>
+           <mrow><mo id="test51_mo7">|</mo><maligngroup/></mrow>
+           <mrow><mo id="test51_mo8">|</mo><malignmark/></mrow>
+         </mrow>
+       </math>
+     </p>
+
+<h3>test 52: vertical stretching in implicit mrow</h3>
+
+
+<p>This test contains
+an msqrt element with tall mspace elements and stretchy operators inside.
+The test verifies vertical stretching inside the implicit mrow child of
+the <code>&lt;msqrt&gt;</code> element.</p> 
+
+     <p class="framed">
+       <math>
+         <msqrt>
+           <mspace height="1.5em" depth="1.5em"/>
+           <mo id="test52_mo0">|</mo>
+           <mspace height="5em" depth="5em"/>
+           <mo id="test52_mo1">(</mo>
+           <mo id="test52_mo2">)</mo>
+         </msqrt>
+       </math>
+     </p>     
+
+<h3>test 53: vertical stretching in mtd</h3>
+
+<p>This test vertical stretching in mtd elements. The cells have
+vertical stretchy operators or tall mspace elements and the
+operators should stretch to the size of the largest mspace element in the
+same row.</p>
+
+     <p class="framed">
+       <math>
+         <mtable>
+           <mtr>
+             <mtd><mspace height="1.5em" depth="1.5em" width="1px"
+        mathbackground="red"/></mtd>
+             <mtd><mo id="test53_mo0">|</mo></mtd>
+             <mtd><mspace height="5em" depth="5em" width="1px"
+        mathbackground="green"/></mtd>
+             <mtd><mspace height="2.5em" depth="2.5em" width="1px"
+        mathbackground="blue"/></mtd>
+           </mtr>
+           <mtr>
+             <mtd><mspace height="1.5em" depth="1.5em" width="1px"
+        mathbackground="red"/></mtd>
+             <mtd><mrow><mo id="test53_mo1">|</mo></mrow></mtd>
+             <mtd><mspace height="5em" depth="5em" width="1px"
+        mathbackground="green"/></mtd>
+             <mtd><mspace height="2.5em" depth="2.5em" width="1px"
+        mathbackground="blue"/></mtd>
+           </mtr>
+           <mtr>
+             <mtd><mspace height="1.5em" depth="1.5em" width="1px"
+        mathbackground="red"/></mtd>
+             <mtd><mo id="test53_mo2">|</mo></mtd>
+             <mtd><mspace height="5em" depth="5em" width="1px"
+        mathbackground="green"/></mtd>
+             <mtd><mo id="test53_mo3">|</mo></mtd>
+           </mtr>
+         </mtable>
+       </math>
+     </p>     
+
+<h3>test 54: vertical stretching in mtd (symmetric)</h3>
+
+<p>This is similar to tests 54 and 45. Basically, we verify that the rule
+for symmetric stetching applies when rowalign is "baseline" but not when it
+is "bottom".</p>
+
+      <p class="framed">
+        <math>
+          <mtable>
+            <mtr rowalign="baseline">
+              <mtd>
+                <mo symmetric="true" id="test54_1">(</mo>
+              </mtd>
+              <mtd>
+                <mspace height="4em" depth="2em" width="1px"
+      mathbackground="red"/>
+              </mtd>
+            </mtr>
+            <mtr rowalign="bottom">
+              <mtd>
+                <mo symmetric="true" id="test54_2">(</mo>
+              </mtd>
+              <mtd>
+                <mspace height="4em" depth="2em" width="1px"
+      mathbackground="red"/>
+              </mtd>
+            </mtr>
+          </mtable>
+        </math>
+      </p>
+
+<h3>test 55: vertical stretching in mtd with rowspan</h3>
+
+<p>In this test, a vertical stretchy operator is contained inside a cell
+with rowspan="2". The second column is a cell of rowspan="3" and is ignored.
+So the stretchy operator should stretch to cover the height of the two
+first cells in the third column.</p>
+
+      <p class="framed">
+        <math>
+          <mtable>
+            <mtr>
+              <mtd rowspan="2" mathbackground="red">
+                <mo id="test55_mo" symmetric="false">|</mo>
+              </mtd>
+              <mtd rowspan="3" mathbackground="blue">
+                <mspace height="3em" depth="3em"/>
+              </mtd>
+              <mtd mathbackground="green">
+    <mspace height="1em" depth="1em"/>
+        </mtd>
+            </mtr>
+            <mtr>
+                <!-- (2,1) -->
+                <!-- (2,2) -->
+                <mtd mathbackground="red">
+      <mspace height="1em" depth="1em"/>
+    </mtd>
+            </mtr>
+            <mtr>
+              <mtd mathbackground="green"><mtext>(3,1)</mtext></mtd>
+              <!-- (3,2) -->
+              <mtd mathbackground="green"><mtext>(3,3)</mtext></mtd>
+            </mtr>
+          </mtable>
+        </math>
+      </p>
+
+<h3>test 56: horizontal stretching in munder/mover/munderover</h3>
+
+<p>This test verifies stretching of horizontal arrows inside
+an munder/mover/munderover element.</p>
+
+      <p class="framed">
+        <math>
+          <mrow>
+            <munder>
+              <mspace width="5em" height="1px" mathbackground="red"/>
+              <mo id="test56_mo0">→</mo>
+            </munder>
+            <mover>
+              <mspace width="5em" height="1px" mathbackground="blue"/>
+              <mo id="test56_mo1">→</mo>
+            </mover>
+            <munderover>
+              <mspace width="5em" height="1px" mathbackground="green"/>
+              <mo id="test56_mo2">→</mo>
+              <mo id="test56_mo3">→</mo>
+            </munderover>
+            <munder>
+              <mspace width="5em" height="1px" mathbackground="red"/>
+              <msup> <!-- this is an embellished op -->
+                <mrow><mspace/><mtext></mtext><mo id="test56_mo4">→</mo></mrow>
+                <mtext></mtext>
+              </msup>
+            </munder>
+          </mrow>
+        </math>
+      </p>
+
+<h3>test 57: horizontal stretching in mtd</h3>
+
+<p>This is the counterpart of test 53 for horizontal stretching.</p>
+
+     <p class="framed">
+       <math>
+         <mtable>
+           <mtr>
+             <mtd><mspace width="3em" height="1px" mathbackground="red"/></mtd>
+             <mtd><mspace width="3em" height="1px" mathbackground="red"/></mtd>
+             <mtd><mspace width="3em" height="1px" mathbackground="red"/></mtd>
+           </mtr>
+           <mtr>
+             <mtd><mo id="test57_mo0">→</mo></mtd>
+             <mtd><mrow><mo id="test57_mo1">→</mo></mrow></mtd>
+             <mtd><mo id="test57_mo2">→</mo></mtd>
+           </mtr>
+           <mtr>
+             <mtd><mspace width="10em" height="1px" mathbackground="red"/></mtd>
+             <mtd><mspace width="10em" height="1px" mathbackground="red"/></mtd>
+             <mtd><mspace width="10em" height="1px" mathbackground="red"/></mtd>
+           </mtr>
+           <mtr>
+             <mtd><mspace width="5em" height="1px" mathbackground="red"/></mtd>
+             <mtd><mspace width="5em" height="1px" mathbackground="red"/></mtd>
+             <mtd><mrow><mo id="test57_3">→</mo></mrow></mtd>
+           </mtr>
+         </mtable>
+       </math>
+     </p>     
+
+<h3>test 58: horizontal stretching in mtd with columnspan</h3>
+
+<p>This is the counterpart of test 55 for horizontal stretching.</p>
+
+<h3>test 59: complex combination of vertical and horizontal stretching in mtd
+</h3>
+
+<p>This is similar to previous tests, but combines columnspan, rowspan, vertical
+stretching and horizontal stretching.</p>
+
+      <p class="framed">
+        <math>
+          <mrow>
+            <mtable>
+              <mtr>
+                <mtd><mi>X</mi></mtd>
+                <mtd columnspan="3"><mo id="test59_mo1">→</mo></mtd>
+                <mtd><mi>X</mi></mtd>
+              </mtr>
+              <mtr>
+                <mtd rowspan="3"><mo id="test59_mo2">↓</mo></mtd>
+                <mtd></mtd>
+                <mtd></mtd>
+                <mtd></mtd>
+                <mtd rowspan="3"><mo id="test59_mo3">↓</mo></mtd>
+              </mtr>
+              <mtr>
+                <mtd></mtd>
+                <mtd><mspace width="6em" height="3em" depth="3em"/></mtd>
+                <mtd></mtd>
+              </mtr>
+              <mtr>
+                <mtd></mtd>
+                <mtd></mtd>
+                <mtd></mtd>
+              </mtr>
+              <mtr>
+                <mtd><mi>X</mi></mtd>
+                <mtd columnspan="3"><mo id="test59_mo4">→</mo></mtd>
+                <mtd><mi>X</mi></mtd>
+              </mtr>
+            </mtable>
+          </mrow>
+        </math>
+      </p>
+
+<h3>test 60: complex combination of space-like and embellished op</h3>
+
+<p>This is similar to tests 50 and 51 but combined in a more complex way.
+The horizontal arrow and vertical bar should stretch.</p>
+
+      <p class="framed">
+        <math>
+          <mrow>
+            <mspace height="10em"/>
+            <mmultiscripts>
+              <mphantom>
+                <maction actiontype="toggle" selection="3">
+                  <mtext>X</mtext>
+                  <mtext>Y</mtext>
+                  <mrow>
+                    <mpadded><mspace/><mtext>S</mtext></mpadded>
+                    <mo id="test60_mo1">|</mo><mspace/>
+                  </mrow>
+                </maction>
+                <mtext>Y</mtext>
+                <maction actiontype="toggle" selection="3">
+                  <mi>X</mi>
+                  <mi>X</mi>
+                  <mspace/>
+                </maction>
+              </mphantom>
+             <mn>X</mn>
+             <mn>X</mn>
+             <mprescripts/>
+             <mn>X</mn>
+             <mn>X</mn>
+            </mmultiscripts>
+            <mover>
+              <mtext mathsize="10em">XXXXX</mtext>
+              <semantics>
+                <munder>
+                  <mrow>
+                    <mtext>A</mtext>
+                    <msup>
+                      <mstyle><mo id="test60_mo2">→</mo></mstyle>
+                      <mtext>Z</mtext>
+                    </msup>
+                  </mrow>
+                  <mi>B</mi>
+                </munder>
+                <annotation encoding="plain/text">X</annotation>
+              </semantics>
+            </mover>
+          </mrow>
+        </math>
+      </p>
+
+<h3>test 61: operator dictionary ; large operators</h3>
+
+<p>This is similar to test 40, but using the default largeop value from the
+operator dictionary.</p>
+
+      <p class="framed">
+        <math display="block">
+          <mstyle>
+            <mtext>&#x220F;</mtext>
+            <mo>&#x220F;</mo>
+            <mo>&#x2210;</mo>
+            <mo>&#x2211;</mo>
+            <mo>&#x222B;</mo>
+            <mo>&#x222C;</mo>
+            <mo>&#x222D;</mo>
+            <mo>&#x222E;</mo>
+            <mo>&#x222F;</mo>
+            <mo>&#x2230;</mo>
+            <mo>&#x2231;</mo>
+            <mo>&#x2232;</mo>
+            <mo>&#x2233;</mo>
+            <mo>&#x22C0;</mo>
+            <mo>&#x22C1;</mo>
+            <mo>&#x22C2;</mo>
+            <mo>&#x22C3;</mo>
+            <mo>&#x2A06;</mo>
+            <mo>&#x2A0B;</mo>
+            <mo>&#x2A0C;</mo>
+            <mo>&#x2A0D;</mo>
+            <mo>&#x2A0E;</mo>
+            <mo>&#x2A0F;</mo>
+            <mo>&#x2A10;</mo>
+            <mo>&#x2A11;</mo>
+            <mo>&#x2A12;</mo>
+            <mo>&#x2A13;</mo>
+            <mo>&#x2A14;</mo>
+            <mo>&#x2A15;</mo>
+            <mo>&#x2A16;</mo>
+            <mo>&#x2A17;</mo>
+            <mo>&#x2A18;</mo>
+            <mo>&#x2A19;</mo>
+            <mo>&#x2A1A;</mo>
+            <mo>&#x2A1B;</mo>
+            <mo>&#x2A1C;</mo>
+          </mstyle>
+        </math>
+      </p>
+
+
+<h3>test 62: operator dictionary ; horizontal stretchy operators</h3>
+
+<p>This is similar to test 44. The test verifies the stretchiness of various
+  horizontal operators from the operator dictionary</p>
+
+      <p class="framed">
+        <math>
+          <mrow id="test62">
+            <munder><mspace width="5em"/><mo>&#x005F;</mo></munder>
+            <munder><mspace width="5em"/><mo>&#x00AF;</mo></munder>
+            <munder><mspace width="5em"/><mo>&#x203E;</mo></munder>
+            <munder><mspace width="5em"/><mo>&#x2190;</mo></munder>
+            <munder><mspace width="5em"/><mo>&#x2192;</mo></munder>
+            <munder><mspace width="5em"/><mo>&#x2194;</mo></munder>
+            <munder><mspace width="5em"/><mo>&#x21A4;</mo></munder>
+            <munder><mspace width="5em"/><mo>&#x21A6;</mo></munder>
+            <munder><mspace width="5em"/><mo>&#x21A9;</mo></munder>
+            <munder><mspace width="5em"/><mo>&#x21AA;</mo></munder>
+            <munder><mspace width="5em"/><mo>&#x21BC;</mo></munder>
+            <munder><mspace width="5em"/><mo>&#x21C0;</mo></munder>
+            <munder><mspace width="5em"/><mo>&#x21C1;</mo></munder>
+            <munder><mspace width="5em"/><mo>&#x21D0;</mo></munder>
+            <munder><mspace width="5em"/><mo>&#x21D2;</mo></munder>
+            <munder><mspace width="5em"/><mo>&#x21D4;</mo></munder>
+            <munder><mspace width="5em"/><mo>&#x23B4;</mo></munder>
+            <munder><mspace width="5em"/><mo>&#x23B5;</mo></munder>
+            <munder><mspace width="5em"/><mo>&#x23DC;</mo></munder>
+            <munder><mspace width="5em"/><mo>&#x23DD;</mo></munder>
+            <munder><mspace width="5em"/><mo>&#x23DE;</mo></munder>
+            <munder><mspace width="5em"/><mo>&#x23DF;</mo></munder>
+            <munder><mspace width="5em"/><mo>&#x27F5;</mo></munder>
+            <munder><mspace width="5em"/><mo>&#x27F6;</mo></munder>
+            <munder><mspace width="5em"/><mo>&#x27F7;</mo></munder>
+            <munder><mspace width="5em"/><mo>&#x294E;</mo></munder>
+            <munder><mspace width="5em"/><mo>&#x2950;</mo></munder>
+            <munder><mspace width="5em"/><mo>&#x295B;</mo></munder>
+            <munder><mspace width="5em"/><mo>&#x295F;</mo></munder>
+            <munder><mspace width="5em"/><mo>&#xFE35;</mo></munder>
+            <munder><mspace width="5em"/><mo>&#xFE36;</mo></munder>
+          </mrow>
+        </math>
+      </p>
+
+
+<h3>test 63: operator dictionary ; vertical stretchy operators</h3>
+
+<p>This is similar to test 44. The test verifies the stretchiness of various
+  vertical operators from the operator dictionary</p>
+
+      <p class="framed">
+        <math >
+          <mrow id="test63">
+            <mspace height="5em" depth="5em"/>
+            <mo>&#x0028;</mo>
+            <mo>&#x0029;</mo>
+            <mo>&#x005B;</mo>
+            <mo>&#x005D;</mo>
+            <mo>&#x007B;</mo>
+            <mo>&#x007C;</mo>
+            <mo>&#x007D;</mo>
+            <mo>&#x2016;</mo>
+            <mo>&#x2191;</mo>
+            <mo>&#x2193;</mo>
+            <mo>&#x2195;</mo>
+            <mo>&#x21D1;</mo>
+            <mo>&#x21D3;</mo>
+            <mo>&#x21D5;</mo>
+            <mo>&#x221A;</mo>
+            <mo>&#x2308;</mo>
+            <mo>&#x2309;</mo>
+            <mo>&#x230A;</mo>
+            <mo>&#x230B;</mo>
+            <mo>&#x27E8;</mo>
+            <mo>&#x27E9;</mo>
+          </mrow>
+        </math>
+      </p>
+
+<h3>test 64: operator dictionary ; various spacing</h3>
+
+<p>This is similar to test 43. This test verifies the spacing around various
+operators from the operator dictionary for a given form.</p>
 
 <h2>Bucket 5: Directionality and Linebreaking</h2>
 
-<p>...</p>
+<h3>test 65: mrow (RTL)</h3>
+
+<p>This test verifies that various mrow-like elements are layout from right
+to left when dir="rtl" is used. The test compares the coordinates
+of the "X" and "Y" children and the "Y" should be on the left of the "X".</p>
+
+      <p class="framed">
+        <math id="test65_0" dir="rtl">
+          <mtext>X</mtext><mtext>Y</mtext>
+        </math>
+        <math dir="rtl">
+          <mrow id="test65_1">
+            <mtext>X</mtext><mtext>Y</mtext>
+          </mrow>
+        </math>
+        <math dir="rtl">
+          <msqrt id="test65_2">
+            <mtext>X</mtext><mtext>Y</mtext>
+          </msqrt>
+        </math>
+        <math dir="rtl">
+          <mstyle id="test65_3">
+            <mtext>X</mtext><mtext>Y</mtext>
+          </mstyle>
+        </math>
+        <math dir="rtl">
+          <merror id="test65_4">
+            <mtext>X</mtext><mtext>Y</mtext>
+          </merror>
+        </math>
+        <math dir="rtl">
+          <mpadded id="test65_5">
+            <mtext>X</mtext><mtext>Y</mtext>
+          </mpadded>
+        </math>
+        <math dir="rtl">
+          <mphantom id="test65_6">
+            <mtext>X</mtext><mtext>Y</mtext>
+          </mphantom>
+        </math>
+        <math dir="rtl">
+          <menclose id="test65_7">
+            <mtext>X</mtext><mtext>Y</mtext>
+          </menclose>
+        </math>
+        <math dir="rtl">
+          <mtable>
+            <mtr>
+              <mtd id="test65_8">
+                <mtext>X</mtext><mtext>Y</mtext>
+              </mtd>
+            </mtr>
+          </mtable>
+        </math>
+      </p>
+
+
+<h3>test 66: simple scripts elements (RTL)</h3>
+
+<p>This is the counterpart of test 2 in RTL mode. The only difference should
+be that the scripts of the msub/msup/msubsup elements are now on the left of
+the base.</p>
+
+      <p class="framed">
+        <math dir="rtl">
+          <mrow id="test66_mrow">
+            <mtext>BASE</mtext>
+          </mrow>
+        </math>
+      </p>
+      <p class="framed">
+        <math dir="rtl">
+          <msub id="test66_msub">
+            <mtext>BASE</mtext><mtext>X</mtext>
+          </msub>
+        </math>
+      </p>
+      <p class="framed">
+        <math dir="rtl">
+          <msup id="test66_msup">
+            <mtext>BASE</mtext><mtext>X</mtext>
+          </msup>
+        </math>
+      </p>
+      <p class="framed">
+        <math dir="rtl">
+          <msubsup id="test66_msubsup">
+            <mtext>BASE</mtext><mtext>X</mtext><mtext>X</mtext>
+          </msubsup>
+        </math>
+      </p>
+      <p class="framed">
+        <math dir="rtl">
+          <mover id="test66_mover">
+            <mtext>BASE</mtext><mtext>X</mtext>
+          </mover>
+        </math>
+      </p>
+      <p class="framed">
+        <math dir="rtl">
+          <munder id="test66_munder">
+            <mtext>BASE</mtext><mtext>X</mtext>
+          </munder>
+        </math>
+      </p>
+      <p class="framed">
+        <math dir="rtl">
+          <munderover id="test66_munderover">
+            <mtext>BASE</mtext><mtext>X</mtext><mtext>X</mtext>
+          </munderover>
+        </math>
+      </p>
+
+
+<h3>test 67: mfrac (RTL)</h3>
+
+<p>This is similar to test 17 but in RTL mode. The behavior of
+the numalign/denomalign attributes should not change but a bevelled fraction
+should be drawn from right to left.</p>
+
+      <p class="framed">
+        <math dir="rtl">
+          <mfrac numalign="left" id="test67_numalign">
+            <mtext>X</mtext>
+            <mtext>XXX</mtext>
+          </mfrac>
+        </math>
+      </p>
+      <p class="framed">
+        <math dir="rtl">
+          <mfrac denomalign="right" id="test67_denomalign">
+            <mtext>XXX</mtext>
+            <mtext>X</mtext>
+          </mfrac>
+        </math>
+      </p>
+      <p class="framed">
+        <math dir="rtl">
+          <mfrac bevelled="true" id="test67_bevelled">
+            <mtext>X</mtext>
+            <mtext>X</mtext>
+          </mfrac>
+        </math>
+      </p>
+
+<h3>test 68: mmultiscripts (RTL)</h3>
+
+<p>This is the counterpart of test 13 in RTL mode. The only difference is
+that scripts are now positioned from right to left.</p>
+
+      <p class="framed">
+        <math dir="rtl">
+          <mmultiscripts id="test68_mmultiscripts">
+            <mtext>X</mtext>
+            <mtext>X</mtext><mtext>X</mtext>
+            <none/><mtext>X</mtext>
+            <mprescripts/>
+            <mtext>X</mtext><mtext>X</mtext>
+            <mtext>X</mtext><none/>
+          </mmultiscripts>
+        </math>
+      </p>
+
+<h3>test 69: mpadded (RTL)</h3>
+
+<p>This is a test for mpadded in RTL mode. Basically, we only check that 
+lspace="5em" is the space between the X and Y.</p>
+
+      <p class="framed">
+        <math dir="rtl" id="test69">
+          <mtext>X</mtext>
+          <mpadded lspace="5em" width="20em">
+            <mtext>Y</mtext>
+          </mpadded>
+          <mtext>Z</mtext>
+        </math>
+      </p>
+
+<h3>test 70: msqrt (RTL)</h3>
+
+<p>This is the counterpart of test 4 in RTL mode. The square root symbol
+should now be on the right.</p>
+
+      <p class="framed">
+        <math dir="rtl">
+          <msqrt id="test70_msqrt"><mtext>X</mtext></msqrt>
+        </math>
+      </p>
+
+
+<h3>test 71: mroot (RTL)</h3>
+
+<p>This is the counterpart of test 5 in RTL mode. The index is now placed on
+the right of the base.</p>
+
+      <p class="framed">
+        <math dir="rtl">
+          <mroot id="test71_mroot"><mtext>Y</mtext><mtext>X</mtext></mroot>
+        </math>
+      </p>
+
+<h3>test 72: mtable (RTL)</h3>
+
+<p>This is the counterpart of tests 11, 12 in RTL mode. The cells in a row
+should be layout from right to left.</p>
+
+      <p class="framed">
+        <math dir="rtl">
+          <mtable id="test72_mtable">
+            <mtr>
+              <mtd><mtext>1</mtext></mtd>
+              <mtd><mtext>2</mtext></mtd>
+              <mtd><mtext>3</mtext></mtd>
+            </mtr>
+            <mtr>
+              <mtd><mtext>4</mtext></mtd>
+              <mtd><mtext>5</mtext></mtd>
+              <mtd><mtext>6</mtext></mtd>
+            </mtr>
+            <mtr>
+              <mtd><mtext>7</mtext></mtd>
+              <mtd><mtext>8</mtext></mtd>
+              <mtd><mtext>9</mtext></mtd>
+            </mtr>
+          </mtable>
+        </math>
+      </p>
+
+
+<h3>test 73: linebreak=auto, linebreakstyle=before</h3>
+
+<p>This test contains a formula given by an mtext of width 6em, an operator
+of width 1em and an mtext of width 6em. The operator is a plus and so 
+has linebreakstyle=before in the operator dictionary.
+The width of the parent div is 10.5em,
+so the formula should break before the operator. The test done is similar
+to the one in test 0.
+</p> 
+
+      <div style="width: 10.5em;" class="framed">
+        <math>
+          <mstyle id="test73" mathsize="2em" style="font-family: Acid3MathML;">
+            <mtext>ABC</mtext> <!-- w1=6 -->
+            <mo>+</mo>         <!-- w2=2 -->
+            <mtext>DEF</mtext> <!-- w3=6 -->
+            <!-- w1+w2+w3 = 14 > 10               (no break)         -->
+            <!-- w1+w2=8<10 ; w3 < 10            (break after)      -->
+            <!-- w1=6<10 ; w2+w3=8 < 10          (break before)     -->
+            <!-- w1 < 10; w2 < 10; w3 < 10       (break everywhere) -->
+          </mstyle>            
+        </math>
+      </div>
+
+<h3>test 74: linebreak=auto, linebreakstyle=after</h3>
+
+<p>This is similar to test 73, but the operator is a comma and so has
+linebreakstyle=after. Hence the formula should break after the operator.</p>
+
+      <div style="width: 10.5em;" class="framed">
+        <math>
+          <mstyle id="test74" mathsize="2em" style="font-family: Acid3MathML;">
+            <mtext>ABC</mtext> <!-- w1=6 -->
+            <mo>,</mo>         <!-- w2=2 -->
+            <mtext>DEF</mtext> <!-- w3=2 -->
+            <!-- w1+w2+w3 = 14 > 10               (no break)         -->
+            <!-- w1+w2=8<10 ; w3 < 10            (break after)      -->
+            <!-- w1=6<10 ; w2+w3=8 < 10          (break before)     -->
+            <!-- w1 < 10; w2 < 10; w3 < 10       (break everywhere) -->
+          </mstyle>            
+        </math>
+      </div>
+
+
+<h3>test 75: linebreak=newline</h3>
+
+<p>This is similar to test 73, but the mtext elements have only width of 1em
+and so no break should happen. However, the operator has 
+linebreak="newline" and so the formula should break before the operator.</p>
+
+      <div style="width: 10.5em;" class="framed">
+        <math>
+          <mstyle id="test75" mathsize="2em"  style="font-family: Acid3MathML;">
+            <mtext>A</mtext>               <!--  w1=2 -->
+            <mo linebreak="newline">+</mo> <!--  w2=2 -->
+            <mtext>B</mtext>               <!--  w3=2 -->
+            <!-- w1+w2+w3 = 6 < 10 (no break) -->
+          </mstyle>            
+        </math>
+      </div>
+
+<h3>test 76: linebreak=nobreak</h3>
+
+<p>This test contains an <code>&lt;mtext&gt;</code>
+of width 6em, a plus operator of width 2em,
+an <code>&lt;mtext&gt;</code> of width 8em, a comma operator of width 2em and 
+an <code>&lt;mtext&gt;</code> of width 8em. The width of the parent div is
+20.5em.
+In theory, the
+formula may break after the comma but since this one has linebreak="nobreak",
+the formula should break before the plus.</p>
+
+      <div style="width: 20.5em;" class="framed">
+        <math>
+          <mstyle id="test76" mathsize="2em" style="font-family: Acid3MathML;">
+            <mtext>ABC</mtext>             <!--  w0=6 -->
+            <mo>+</mo>                     <!--  w1=2 -->
+            <mtext>DEFG</mtext>            <!--  w2=8 -->
+            <mo linebreak="nobreak">,</mo> <!--  w3=2 -->
+            <mtext>HIJK</mtext>            <!--  w4=8 -->
+            <!-- w0+w1+w2+w3=18; w4=8  (break after the comma) -->
+            <!-- w0=2 ; w1+w2+w3+w4=20 (break before the plus) -->
+          </mstyle>            
+        </math>
+      </div>
+
+
+<h3>test 77: linebreak=goodbreak, badbreak</h3>
+
+<p>This is similar to test 76, except that the plus has
+<code>linebreak="goodbreak"</code> and the comma has
+<code>linebreak="badbreak"</code>. Hence the formula should break before
+the plus.</p>
+
+      <div style="width: 20.5em;" class="framed">
+        <math>
+          <mstyle id="test77" mathsize="2em" style="font-family: Acid3MathML;">
+            <mtext>ABC</mtext>               <!--  w0=6 -->
+            <mo linebreak="goodbreak">+</mo> <!--  w1=2 -->
+            <mtext>DEFG</mtext>              <!--  w2=8 -->
+            <mo linebreak="badbreak">,</mo>  <!--  w3=2 -->
+            <mtext>HIJK</mtext>              <!--  w4=8 -->
+            <!-- w0+w1+w2+w3=180; w4=8  (break after the comma) -->
+            <!-- w0=2 ; w1+w2+w3+w4=20 (break before the plus) -->
+          </mstyle>            
+        </math>
+      </div>
+
+<h3>test 78: lineleading</h3>
+
+<p>This test contains an mtext of width 6em, a plus of width 2em and
+an mtext of width 6em. The parent div has width 8.5em and so the formula
+should break before the plus. Moreover, the operator has lineleading="5em",
+so the space between the bottom of the first mtext and the top of the plus
+should be 5em.</p>
+
+      <div style="width: 8.5em;" class="framed">
+        <math>
+          <mstyle id="test78" mathsize="2em" style="font-family: Acid3MathML;">
+            <mtext>ABC</mtext>
+            <mo lineleading="5em">+</mo>
+            <mtext>DEF</mtext>
+            <!-- w0=6; w1+w2=8 (break before the plus) -->
+          </mstyle>
+        </math>
+      </div>
+
+<h3>test 79: indentalign</h3>
+
+<p>This is similar to test 73 but the mo element has indentalign="right"
+instead. Hence the indent before the plus should at least be 2em.</p>
+
+      <div style="width: 10.5em;" class="framed">
+        <math>
+          <mstyle id="test79" mathsize="2em" style="font-family: Acid3MathML;">
+            <mtext>ABC</mtext>
+            <mo indentalign="right">+</mo>
+            <mtext>DEF</mtext>
+            <!-- w0=6; w1+w2=8 (break before the plus) -->
+          </mstyle>
+        </math>
+      </div>
+
+<h3>test 80: indentshift</h3>
+
+<p>This is similar to test 79, but with indentshift="2em" instead.
+Again, the indent before the plus should at least be 2em.</p>
+
+      <div style="width: 10.5em;" class="framed">
+        <math>
+          <mstyle id="test80" mathsize="2em" style="font-family: Acid3MathML;">
+            <mtext>ABC</mtext>
+            <mo indentshift="2em">+</mo>
+            <mtext>DEF</mtext>
+            <!-- w0=6; w1+w2=8 (break before the plus) -->
+          </mstyle>
+        </math>
+      </div>
 
 <h2>Bucket 6: Alignment and Elementary Mathematics</h2>
 
-<p>...</p>
+<h3>test 81: malignmark</h3>
+
+<p>This table contains two rows, each one with one cell. The first cell
+is "ABC" with malignmark edge="right" at the end and the second cell is
+"DEF" with malignmark edge="left". The two marks should be aligned, like this:
+</p>
+
+<pre>
+ABC|
+   |DEF
+</pre>
+
+      <p class="framed">
+        <math>
+          <!--
+              ABC|
+                 |DEF
+            -->
+          <mtable>
+            <mtr>
+              <mtd>
+                <maligngroup/>
+                <mtext id="test81_1">ABC<malignmark edge="right"/></mtext>
+              </mtd>
+            </mtr>
+            <mtr>
+              <mtd>
+                <maligngroup/>
+                <mtext id="test81_2"><malignmark edge="left"/>DEF</mtext>
+              </mtd>
+            </mtr>
+          </mtable>
+        </math>
+      </p>
+
+
+<h3>test 82: groupalign</h3>
+
+<p>This is similar to test 81, the first cell has
+maligngroup groupalign="right" 
+and the second maligngroup groupalign="left" so
+the table should again render like this:
+</p>
+
+<pre>
+ABC|
+   |DEF
+</pre>
+
+      <p class="framed">
+        <math>
+          <!--
+              ABC|
+                 |DEF
+            -->
+          <mtable>
+            <mtr>
+              <mtd>
+                <maligngroup groupalign="right"/>
+                <mtext id="test82_1">ABC</mtext>
+              </mtd>
+            </mtr>
+            <mtr>
+              <mtd>
+                <maligngroup groupalign="left"/>
+                <mtext id="test82_2">DEF</mtext>
+              </mtd>
+            </mtr>
+          </mtable>
+        </math>
+      </p>     
+
+<h3>test 83: groupalign=center, malignmark ; columnalign</h3>
+
+<p>Here, the first cell is "ABCDEF" with groupalign="center"
+and the second has "1234" with malignmark on the middle, so the table should
+render like
+</p>
+
+<pre>
+ABC|DEF
+ 12|34
+</pre>
+
+      <p class="framed">
+        <math>
+          <!--
+              ABC|DEF
+               12|34
+            -->
+          <mtable columnalign="left">
+            <mtr>
+              <mtd>
+                <maligngroup groupalign="center"/>
+                <mtext id="test83_1">ABCDEF</mtext>
+              </mtd>
+            </mtr>
+            <mtr>
+              <mtd>
+                <maligngroup/>
+                <mtext id="test83_2">12<malignmark/>34</mtext>
+              </mtd>
+            </mtr>
+          </mtable>
+        </math>
+      </p>
+
+<h3>test 84: groupalign=decimalpoint</h3>
+
+<p>Here, the first align group is "ABC.EF" with groupalign=decimalpoint and
+the second is "1234" with malignmark edge="left" on the middle and another
+malignmark (this one should be ignored). The table should render like this:
+</p>
+
+<pre>
+ABC|.FG
+ 12|34
+</pre>
+
+      <p class="framed">
+        <math>
+          <!--
+              ABC|.FG
+               12|34
+            -->
+          <mtable columnalign="right">
+            <mtr>
+              <mtd>
+                <maligngroup groupalign="decimalpoint"/>
+                <mtext id="test84_1">ABC.EF</mtext>
+              </mtd>
+            </mtr>
+            <mtr>
+              <mtd>
+                <maligngroup/>
+                <mtext id="test84_2">12<malignmark edge="left"/>34<malignmark/>
+                </mtext>
+              </mtd>
+            </mtr>
+          </mtable>
+        </math>
+      </p>
+
+
+<h3>test 85: alignment ; several rows</h3>
+
+<p>This is similar to test 81 but with several groupalign elements and
+malignmark at different places. The table should render like this:
+</p>
+
+<pre>
+    |ABCD
+   A|BCD
+  AB|CD
+ ABC|D
+ABCD|
+</pre>
+
+      <p class="framed">
+        <math>
+            <!-- 
+                   |ABCD
+                  A|BCD
+                 AB|CD
+                ABC|D
+               ABCD|
+            -->
+            <mtable>
+              <mtr>
+                <mtd>
+                  <maligngroup/>
+                  <mtext id="test85_0"><malignmark/>ABCD</mtext>
+                </mtd>
+              </mtr>
+              <mtr>
+                <mtd>
+                  <maligngroup/>
+                  <mtext id="test85_1">A<malignmark/>BCD</mtext>
+                </mtd>
+              </mtr>
+              <mtr>
+                <mtd>
+                  <maligngroup/>
+                  <mtext id="test85_2">AB<malignmark/>CD</mtext>
+                </mtd>
+              </mtr>
+              <mtr>
+                <mtd>
+                  <maligngroup/>
+                  <mtext id="test85_3">ABC<malignmark/>D</mtext>
+                </mtd>
+              </mtr>
+              <mtr>
+                <mtd>
+                  <maligngroup/>
+                  <mtext id="test85_4">ABCD<malignmark/></mtext>
+                </mtd>
+              </mtr>
+            </mtable>
+        </math>
+      </p>
+
+
+<h3>test 86: several alignment groups in cells ; mtd@groupalign</h3>
+
+<p>This is similar to test 82 but with several maligngroup elements in
+each cell. The groupalign attribute is used on the mtd elements to specify
+the alignment. The table should render like this:</p>
+
+<pre>
+        |[ABC][E|F]  [GHIJ]|
+    [01]|       |[234] [56]|[78]
+</pre>
+
+      <p class="framed">
+        <math>
+          <!--
+                      |[ABC][E|F]  [GHIJ]|
+                  [01]|       |[234] [56]|[78]
+            -->
+          <mtable>
+            <mtr>
+              <mtd groupalign="left center right">
+                <maligngroup/><mtext id="test86_0">ABC</mtext>
+                <maligngroup/><mtext id="test86_1">EF</mtext>
+                <maligngroup/><mtext id="test86_2">GHIJ</mtext>
+              </mtd>
+      </mtr>
+      <mtr>
+              <mtd groupalign="right left center">
+                <maligngroup/><mtext id="test86_3">01</mtext>
+                <maligngroup/><mtext id="test86_4">234</mtext>
+                <maligngroup/><mtext id="test86_5">5678</mtext>
+              </mtd>
+            </mtr>
+          </mtable>
+        </math>
+      </p>
+
+<h3>test 87: mtr@groupalign</h3>
+
+<p>This is similar to test 86, but the groupalign attribute is specified on
+  the first mtr element.</p>
+
+      <p class="framed">
+        <math>
+          <!--
+                      |[ABC][E|F]  [GHIJ]|
+                  [01]|       |[234] [56]|[78]
+            -->
+          <mtable>
+            <mtr groupalign="{left center right}{right left center}">
+              <mtd>
+                <maligngroup/><mtext id="test87_0">ABC</mtext>
+                <maligngroup/><mtext id="test87_1">EF</mtext>
+                <maligngroup/><mtext id="test87_2">GHIJ</mtext>
+              </mtd>
+      </mtr>
+      <mtr>
+              <mtd>
+                <maligngroup/><mtext id="test87_3">01</mtext>
+                <maligngroup/><mtext id="test87_4">234</mtext>
+                <maligngroup/><mtext id="test87_5">5678</mtext>
+              </mtd>
+            </mtr>
+          </mtable>
+        </math>
+      </p>
+
+<h3>test 88: mtable@groupalign</h3>
+
+<p>This is similar to test 86, but the groupalign attribute is specified on
+  the mtable element.</p>
+
+      <p class="framed">
+        <math>
+          <!--
+                      |[ABC][E|F]  [GHIJ]|
+                  [01]|       |[234] [56]|[78]
+            -->
+          <mtable groupalign="{left center right}{right left center}">
+            <mtr>
+              <mtd>
+                <maligngroup/><mtext id="test88_0">ABC</mtext>
+                <maligngroup/><mtext id="test88_1">EF</mtext>
+                <maligngroup/><mtext id="test88_2">GHIJ</mtext>
+              </mtd>
+      </mtr>
+      <mtr>
+              <mtd>
+                <maligngroup/><mtext id="test88_3">01</mtext>
+                <maligngroup/><mtext id="test88_4">234</mtext>
+                <maligngroup/><mtext id="test88_5">5678</mtext>
+              </mtd>
+            </mtr>
+          </mtable>
+        </math>
+      </p>
+
+<h3>test 89: mstack, msrow</h3>
+
+<p>This is a simple test for the mstack and msrow elements that should render
+like this:</p>
+
+<pre>
+  424
+ + 33
+</pre>
+
+<p>The test verifies that the bottom of "424" is at most the top of the "+",
+that the "+" and "33" are horizontally aligned and that the left
+(respectively right) of
+"424" is vertically aligned with the "+" (respectively "33").</p>
+
+      <p class="framed">
+        <math>
+          <mstack>
+            <mn id="test89_0">424</mn>
+            <msrow>
+              <mo id="test89_1">+</mo>
+              <none/>
+              <mn id="test89_2">33</mn>
+            </msrow>
+          </mstack>
+        </math>
+      </p>
+
+<h3>test 90: msline</h3>
+
+<p>This is a simple test for the mstack and msline elements, that should
+render like this:</p>
+
+<pre>
+123
+---
+456
+</pre>
+
+<p>The test verifies that the bottom first line is at most as low as the top
+of the last line and that their left/right coordinates are aligned.</p>
+
+      <p class="framed">
+        <math>
+          <mstack>
+            <mn id="test90_1">123</mn>
+            <msline/>
+            <mn id="test90_2">456</mn>
+          </mstack>
+        </math>
+      </p>
+
+<h3>test 91: msgroup, shift</h3>
+
+<p>This is a simple test for the msgroup element and shift attribute, that
+should render like this:</p>
+
+<pre>
+ 123
+ 456
+456
+789
+</pre>
+
+<p>The test verifies that the two first lines are aligned and that the two last
+lines are aligned. The two last lines should be shifted to the left with
+respect to the two first lines.</p>
+
+      <p class="framed">
+        <math>
+          <mstack>
+            <msgroup>
+              <mn id="test91_0">123</mn>
+              <mn id="test91_1">456</mn>
+            </msgroup>
+            <msgroup shift="1">
+              <mn id="test91_2">456</mn>
+              <mn id="test91_3">789</mn>
+            </msgroup>
+          </mstack>
+        </math>
+      </p>
+
+<h3>test 92: msline (leftoverhang, rightoverhang, mslinethickness)</h3>
+
+<p>This is a simple test for the leftoverhang, rightoverhang and
+ mslinethickness attributes of the msline element, that should render like
+this:</p>
+
+<pre>
+  012
+=======
+</pre>
+
+<p>The test measures the extra amount that the line overhangs on the right
+of the 012 (rightoverhang="5em"), the extra amount that the line overhangs on
+the left of the 012 (leftoverhang="2.5em") and the linethickness of the line
+(mslinethickness="3em")</p>
+
+      <p class="framed">
+        <math>
+          <mstack id="test92">
+            <mn>012</mn>
+            <msline leftoverhang="2.5em"
+                    rightoverhang="5em"
+                    mslinethickness="3em"/>
+          </mstack>
+        </math>
+      </p>
+
+<h3>test 93: mstack@stackalign</h3>
+
+<p>This is a simple test for the mstack@stackalign attribute, that should 
+render like this:</p>
+
+<pre>
+1
+111
+ 1
+111
+  1
+111
+</pre>
+
+<p>The test verifies that a line with a "111" is indeed wider than a line with
+a "1" (to avoid making the test trivial) and that the pairs of lines are
+aligned left, center and right.</p>
+
+      <p class="framed">
+        <math>
+          <mstack stackalign="left">
+            <mn id="test93_0">1</mn>
+            <mn id="test93_1">111</mn>
+          </mstack>
+          <mstack stackalign="center">
+            <mn id="test93_2">1</mn>
+            <mn id="test93_3">111</mn>
+          </mstack>
+          <mstack stackalign="right">
+            <mn id="test93_4">1</mn>
+            <mn id="test93_5">111</mn>
+          </mstack>
+        </math>
+      </p>
+
+<h3>test 94: mscarries, scriptlevel, scriptsizemultiplier</h3>
+
+<p>This test verifies that the mscarries element increments scriptlevel by 1
+and change the default value of scriptsizemultiplier to 0.6em. The initial
+size is set to 10em so the size inside mscarry should be 6em.</p>
+
+      <p class="framed">
+        <math>
+          <mstyle mathsize="10em">
+            <mstack>
+              <mscarries>
+                <mscarry><mn id="test94">1</mn></mscarry>
+              </mscarries>
+              <mn>1</mn>
+            </mstack>
+          </mstyle>
+        </math>
+      </p>
+
+<h3>test 95: mlongdiv</h3>
+
+<p>This is a simple test for mlongdiv, that should render like this:</p>
+
+<pre>
+
+    16
+  ------
+64) 1024
+    0000
+</pre>
+
+<p>The test verifies that "64" is on the right of "16" and "1024", that 16
+is above "1024" and that "64" and "1024" are aligned. It verifies that "1024"
+and "0000" have same width, are aligned and that "1024" is above "0000".</p>
+
+      <p class="framed">
+        <math>
+          <mlongdiv>
+            <mn id="test95_0">64</mn>
+            <mn id="test95_1">16</mn>
+            <mn id="test95_2">1024</mn>
+            <mn id="test95_3">0000</mn>
+          </mlongdiv>
+        </math>
+      </p>
+
+<h3>test 96: mlongdiv@longdivstyle</h3>
+
+<p>This is similar to test 95, but with a couple of alternative notations:</p>
+
+<pre>
+stackedrightright  left/\right      stackedleftleft
+
+1024 | 64          64 / 1024 \ 16     64 | 1024
+     |-----                         -----|
+     | 16                             16 |
+</pre>
+
+      <p class="framed">
+        <math>
+          <mlongdiv longdivstyle="stackedrightright">
+            <mn id="test96_0">64</mn>
+            <mn id="test96_1">16</mn>
+            <mn id="test96_2">1024</mn>
+          </mlongdiv>
+          <mlongdiv longdivstyle="left/\right">
+            <mn id="test96_3">64</mn>
+            <mn id="test96_4">16</mn>
+            <mn id="test96_5">1024</mn>
+          </mlongdiv>
+          <mlongdiv longdivstyle="stackedleftleft">
+            <mn id="test96_6">64</mn>
+            <mn id="test96_7">16</mn>
+            <mn id="test96_8">1024</mn>
+          </mlongdiv>
+        </math>
+      </p>
 
 <h2>Other Special tests</h2>
 
-<p>...</p>
+<h3>Test 97: Javascript</h3>
+
+<p>This test verifies compatibility of MathML with Javascript. Initially, we
+have an empty mstyle element:</p>
+
+<pre>
+  &lt;math&gt;
+    &lt;mstyle id="test97"&gt;
+    &lt;/mstyle&gt;
+  &lt;/math&gt;
+</pre>
+
+<p>Then, the test performs the following operations:</p>
+
+<ol>
+<li>create an mo element</li>
+<li>set the <code>textContent</code> of the mo to "|"</li>
+<li>create an mi element</li>
+<li>create an mtext element</li>
+<li>create an mrow element</li>
+<li>append the mo, mi and mtext in the mrow in that order. At that step,
+you get
+</li>
+</ol>
+
+<p>At that step, you get the following structure:</p>
+
+<pre>
+&lt;mrow&gt;
+  &lt;mo&gt;|&lt;/mo&gt;
+  &lt;mi&gt;&lt;/mi&gt;
+  &lt;mtext&gt;&lt;/mtext&gt;
+&lt;/mrow&gt;
+</pre>
+
+<p>Then the test performs the following operations:</p>
+<ol>
+<li>create an mspace element</li>
+<li>set the height attribute of the mspace to "4em"</li>
+<li>set the depth attribute of the mspace to "4em"</li>
+<li>create an mpadded element</li>
+<li>set the height attribute of the mspace to "0"</li>
+<li>set the depth attribute of the mspace to "0"</li>
+<li>insert the mspace element into the mpadded</li>
+</ol>
+
+<p>At that step, you get the following structure:</p>
+
+<pre>
+  &lt;mpadded height="0" depth="0"&gt;
+    &lt;mspace depth="4em" height="4em"/&gt;
+  &lt;/mpadded&gt;
+</pre>
+
+<p>Then the test performs the following operations:</p>
+<ol>
+<li>create an mstyle element</li>
+<li>append the mpadded</li>
+<li>append the mrow</li>
+<li>remove the mi from the mrow</li>
+<li>remove the depth and height attributes from the mpadded</li>
+</ol>
+
+<p>At that step, you get the following structure:</p>
+
+<pre>
+&lt;math&gt;
+  &lt;mstyle id="test97"&gt;
+    &lt;mrow&gt;
+      &lt;mo&gt;|&lt;/mo&gt;
+      &lt;mtext&gt;&lt;/mtext&gt;
+    &lt;/mrow&gt;
+    &lt;mpadded&gt;
+      &lt;mspace depth="4em" height="4em"/&gt;
+    &lt;/mpadded&gt;
+  &lt;/mstyle&gt;
+&lt;/math&gt;
+</pre>
+
+<p>Finally, the mrow becomes an embellished operator. The height of the
+mpadded is the height of the mspace, that is 8em. Hence the test verifies
+that the mo bar stretches to that size.</p>
+
+      <p class="framed">
+        <math>
+          <mstyle id="test97">
+          </mstyle>
+        </math>
+      </p>
+
+<script type="text/javascript">
+  var ns = "http://www.w3.org/1998/Math/MathML";
+  var mo = document.createElementNS(ns, "mo");
+  mo.textContent = "|"; 
+  var mi = document.createElementNS(ns, "mi");
+  var mtext = document.createElementNS(ns, "mtext");
+  var mrow = document.createElementNS(ns, "mrow");
+  mrow.appendChild(mo);
+  mrow.appendChild(mi);
+  mrow.appendChild(mtext);
+  var mspace = document.createElementNS(ns, "mspace");
+  mspace.setAttribute("height", "4em");
+  mspace.setAttribute("depth", "4em");
+  var mpadded = document.createElementNS(ns, "mpadded");
+  mpadded.setAttribute("depth", "0");
+  mpadded.setAttribute("height", "0");
+  mpadded.appendChild(mspace);
+  var mstyle = document.getElementById("test97");
+  mstyle.appendChild(mpadded);
+  mstyle.appendChild(mrow);
+  mrow.removeChild(mi);
+  mpadded.removeAttribute("depth");
+  mpadded.removeAttribute("height");
+</script>
+
+<h3>Test 98: mixing with HTML and SVG</h3>
+
+<p>This test verifies compatibility of MathML with SVG and HTML. A MathML
+root is inserted inside an SVG image, rotated by 180°. The MathML element
+contains an mover element, an <code>&lt;mtext&gt;</code>
+with embedded SVG and a semantics with
+embedded HTML. The test checks:</p>
+
+<ul>
+<li>That the script of the mover element is below the base (<em>not</em> above,
+the image is rotated by 180°!)</li>
+<li>A total width obtained by summing those of the embedded SVG and HTML
+fragment.</li>
+</ul>
+
+      <div class="framed">
+        <svg width="30em" height="5em" viewBox="0 0 300 50">
+          <g transform="translate(150,25) rotate(180) translate(-150,-25)">
+            <switch>
+              <foreignObject
+                 requiredExtensions="http://www.w3.org/1998/Math/MathML" 
+                 width="300px" height="50px">
+                <math>
+                  <mrow>
+                    <mover mathcolor="green">
+                      <mtext id="test98_A">A</mtext>
+                      <mtext id="test98_B">B</mtext>
+                    </mover>
+                    <mtext id="test98_start">START</mtext>
+                    <mtext>
+                      <svg width="110px" height="20px">
+                        <text fill="red" dy="20px">SVG</text>
+                      </svg>
+                    </mtext>
+                    <semantics>
+                      <mtext>
+                        <span style="display: inline-block; color: blue;
+                                     width: 70px;">HTML</span>
+                      </mtext>
+                      <annotation encoding="plain/text">D</annotation>
+                    </semantics>
+                    <mtext id="test98_end">END</mtext>
+                  </mrow>
+                </math>
+              </foreignObject>
+            </switch>
+          </g>
+        </svg>
+      </div>
+
+<p>Another test verifies the compatibility of MathML line breaking with the
+CSS one. An inline formula is placed inside a table cell. This HTML table is
+itself contained in a div of width 5em. Hence this will also be the cell width
+and thus the one used by the MathML line breaking algorithm.
+The formula contains
+an mtext "ABC" (3em), a plus mo (1em) and an mtext "DEF" (3em) and so should
+break. The test checks that the bottom of "ABC" is at most as low as the top
+of "DEF".</p>
+
+        <div class="framed" style="width: 5em;">
+          <table>
+            <tr>
+              <td>
+                <math>
+                  <mtext id="test98_abc">ABC</mtext>
+                  <mo>+</mo>
+                  <mtext id="test98_def">DEF</mtext>
+                </math>
+              </td>
+            </tr>
+          </table>
+        </div>
+
+<h3>Test 99: compatibility with CSS ; class, id and style</h3>
+
+<p>This test verifies compatibility of MathML with CSS using basic rules
+that modify the font-size:</p>
+<ul>
+<li>The size of the X is set by
+  <code>math.test99 :first-child { font-size: 2em; }</code>
+</li>
+<li>The size of the Y by a <code>style="font-size: 3em"</code> attribute.
+</li>
+<li>
+  The size of the Z by
+  <code>#test99 > mn { font-size: 4em; }</code>
+</li>
+</ul>
+
+<p>Note that is really a pure CSS test (albeit nodes are MathML) and so
+should even pass in browsers without MathML support.</p>
+
+<p class="framed">
+        <math class="test99" id="test99">
+          <mtext>X</mtext>
+          <mtext style="font-size: 3em">Y</mtext>
+          <mn>Z</mn>
+        </math>
+</p>
+
 
  </body>
 </html>
